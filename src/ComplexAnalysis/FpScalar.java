@@ -3,8 +3,6 @@ package ComplexAnalysis;
 
 /**
  * A class representing a scalar in the Fp field.
- * All methods support the case of the other scalar being in another field,
- * and the result is complex scalar.
  */
 public class FpScalar implements Scalar{
 
@@ -30,11 +28,7 @@ public class FpScalar implements Scalar{
     @Override
     public Scalar add(Scalar other) {
         // Assumes the other scalar has the same p as a mod.
-        if (other instanceof FpScalar) {
-            return new FpScalar(p, modp(value + ((FpScalar) other).value));
-        }
-        // Should never get here, just in case.
-        return new ComplexScalar(value + other.getReal(), other.getImaginary());
+        return new FpScalar(p, modp(value + ((FpScalar) other).value));
     }
 
     /**
@@ -45,11 +39,7 @@ public class FpScalar implements Scalar{
     @Override
     public Scalar sub(Scalar other) {
         // Assumes the other scalar has the same p as a mod.
-        if (other instanceof FpScalar) {
-            return new FpScalar(p, modp(value - ((FpScalar) other).value));
-        }
-        // Should never get here, just in case.
-        return new ComplexScalar(value - other.getReal(), other.getImaginary());
+        return new FpScalar(p, modp(value - ((FpScalar) other).value));
     }
 
     /**
@@ -60,11 +50,7 @@ public class FpScalar implements Scalar{
     @Override
     public Scalar mul(Scalar other) {
         // Assumes the other scalar has the same p as a mod.
-        if (other instanceof FpScalar) {
-            return new FpScalar(p, modp(value * ((FpScalar) other).value));
-        }
-        // Should never get here, just in case.
-        return new ComplexScalar(value * other.getReal(),value * other.getImaginary());
+        return new FpScalar(p, modp(value * ((FpScalar) other).value));
     }
 
     /**
@@ -74,16 +60,9 @@ public class FpScalar implements Scalar{
      */
     @Override
     public Scalar divide(Scalar other) {
-        // Assumes the other scalar has the same p as a mod
-        // && other.value != 0 mod p.
-        if (other instanceof FpScalar) {
-            // Derived from Fermat's last theorem.
-            int inverseOfOther = modp((int) Math.pow((((FpScalar) other).value), p-2));
-            return new FpScalar(p, modp(value * inverseOfOther));
-        }
-        // Should never get here, just in case.
-        ComplexScalar alpha = new ComplexScalar(value, 0);
-        return alpha.divide(other);
+        // Assumes the other scalar has the same p as a mod && other.value != 0 mod p.
+        int inverseOfOther = modp((int) Math.pow((((FpScalar) other).value), p-2));
+        return new FpScalar(p, modp(value * inverseOfOther));
 
     }
 

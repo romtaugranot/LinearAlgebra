@@ -6,9 +6,9 @@ package ComplexAnalysis;
  */
 public class ComplexScalar implements Scalar{
 
-    private double real;
+    protected double real;
 
-    private double imaginary;
+    protected double imaginary;
 
     public ComplexScalar(double real, double imaginary){
         this.real = real;
