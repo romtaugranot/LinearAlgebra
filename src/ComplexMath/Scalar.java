@@ -24,12 +24,20 @@ public interface Scalar {
     double getImaginary();
 
     static Scalar getZero(){
-        return new ComplexNumber(0,0);
+        return new ComplexScalar(0,0);
     }
 
     default boolean equal(Scalar other){
         return this.getReal() == other.getReal()
                 && this.getImaginary() == other.getImaginary();
+    }
+
+    default boolean isZero(){
+        return this.equal(getZero());
+    }
+
+    default boolean isReal(){
+        return getImaginary() == 0;
     }
     
 }
