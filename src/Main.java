@@ -1,45 +1,35 @@
-import Matrices.RealMatrix;
-import Vectors.RealVector;
+import ComplexMath.ComplexNumber;
+import ComplexMath.RealScalar;
+import ComplexMath.Scalar;
 
 public class Main {
 
     public static void main(String[] args) {
-        //checkRealVector();
-        checkRealMatrix();
+        //checkComplexScalar();
+        checkRealComplex();
+
     }
 
-    private static void checkRealMatrix() {
-        RealVector v1 = new RealVector(1,2,3,4,5);
-        RealVector v2 = new RealVector(5,4,3,2,1);
-        RealVector v3 = new RealVector(1,1,1,1,1);
-        RealMatrix matrix1 = new RealMatrix(v1,v2,v3,v2);
-
-        RealVector v4 = new RealVector(1,2,3,4,5);
-        RealVector v5 = new RealVector(5,4,3,2,1);
-        RealVector v6 = new RealVector(1,1,1,1,1);
-        RealMatrix matrix2 = new RealMatrix(v4,v5,v6,v5);
-        System.out.println(matrix1);
-        System.out.println(matrix2.equals(matrix1));
-        System.out.println(matrix1.getRowVectors());
-        System.out.println(matrix1.getColVectors());
+    private static void checkRealComplex() {
+        Scalar a = new RealScalar(1);
+        Scalar b = new RealScalar(5);
+        System.out.println(a.equal(Scalar.getZero()));
+        System.out.println(a.add(b));
+        System.out.println(a.mul(b));
+        System.out.println(a.sub(b));
+        System.out.println(a.div(b));
+        System.out.println(a.getInverse());
     }
 
-    private static void checkRealVector() {
-        System.out.println(RealVector.getZeroVector(5));
-        double[] co1 = new double[5];
-        double[] co2 = new double[5];
-        for (int i = 0; i < 5; i++){
-            co1[i] = i + 1;
-            co2[i] = 5 - i;
-        }
-        RealVector v1 = new RealVector(co1);
-        RealVector v2 = new RealVector(co2);
-        System.out.println(v1);
-        System.out.println(v2);
-        System.out.println(v1.add(v2));
-        System.out.println(v1.multiply(3));
-        System.out.println(v1.dotProduct(v2));
-        System.out.println(RealVector.getZeroVector(5).equals(RealVector.getZeroVector(6)));
+    private static void checkComplexScalar() {
+        Scalar a = new ComplexNumber(1,1);
+        Scalar b = new ComplexNumber(1,1);
+        System.out.println(a.equal(Scalar.getZero()));
+        System.out.println(a.add(b));
+        System.out.println(a.mul(b));
+        System.out.println(a.sub(b));
+        System.out.println(a.div(b));
+        System.out.println(a.getInverse());
     }
 
 }
