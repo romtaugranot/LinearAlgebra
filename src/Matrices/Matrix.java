@@ -15,7 +15,9 @@ public interface Matrix {
 
     Matrix transpose();
 
-    Matrix canonicalRowEchelon();
+    Matrix rowEchelon();
+
+    Vector solve(Vector b);
 
     static Matrix getZeroMatrix(int m, int n){
         ComplexScalar[][] matrix = new ComplexScalar[m][n];
@@ -36,4 +38,8 @@ public interface Matrix {
     int getM();
 
     int getN();
+
+    int getRank();
+
+
 }

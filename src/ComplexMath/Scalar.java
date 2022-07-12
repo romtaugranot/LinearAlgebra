@@ -19,17 +19,17 @@ public interface Scalar {
 
     Scalar getMinus();
 
-    double getReal();
+    BigRational getReal();
 
-    double getImaginary();
+    BigRational getImaginary();
 
     static Scalar getZero(){
-        return new ComplexScalar(0,0);
+        return new ComplexScalar(BigRational.ZERO,BigRational.ZERO);
     }
 
     default boolean equal(Scalar other){
-        return this.getReal() == other.getReal()
-                && this.getImaginary() == other.getImaginary();
+        return this.getReal().equals(other.getReal())
+                && this.getImaginary().equals(other.getImaginary());
     }
 
     default boolean isZero(){
@@ -37,7 +37,7 @@ public interface Scalar {
     }
 
     default boolean isReal(){
-        return getImaginary() == 0;
+        return getImaginary().equals(BigRational.ZERO);
     }
     
 }

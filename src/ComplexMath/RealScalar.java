@@ -6,8 +6,10 @@ package ComplexMath;
  */
 public class RealScalar extends ComplexScalar {
 
-    public RealScalar(double real) {
-        super(real, 0);
+    public RealScalar(String real){ super(real, "0"); }
+
+    public RealScalar(BigRational real) {
+        super(real, BigRational.ZERO);
     }
 
     public RealScalar(RealScalar scalar) {

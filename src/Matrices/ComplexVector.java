@@ -1,5 +1,6 @@
 package Matrices;
 
+import ComplexMath.BigRational;
 import ComplexMath.ComplexScalar;
 import ComplexMath.Scalar;
 
@@ -72,9 +73,18 @@ public class ComplexVector implements Vector{
     }
 
     @Override
+    public Vector getMinus() {
+        ComplexVector v = new ComplexVector(this.entries.toArray(ComplexScalar[]::new));
+        for (int i = 0; i < size; i++){
+            v.entries.set(i, (ComplexScalar) this.entries.get(i).getMinus());
+        }
+        return v;
+    }
+
+    @Override
     public String toString() {
         if (isReal()){
-            double[] real = new double[size];
+            BigRational[] real = new BigRational[size];
             for(int i = 0; i < size; i++){
                 real[i] = entries.get(i).getReal();
             }

@@ -1,5 +1,6 @@
 package Matrices;
 
+import ComplexMath.BigRational;
 import ComplexMath.RealScalar;
 import ComplexMath.Scalar;
 
@@ -13,8 +14,13 @@ public class RealVector extends ComplexVector{
         super(entries.stream().map(x -> (Scalar) x).collect(Collectors.toList()));
     }
 
-    public RealVector(double... entries){
-        this(Arrays.stream(entries).boxed().toList().stream()
+    public RealVector(String... entries){
+        this(Arrays.stream(entries).toList().stream()
+                .map(RealScalar::new).toArray(RealScalar[]::new));
+    }
+
+    public RealVector(BigRational... entries){
+        this(Arrays.stream(entries).toList().stream()
                 .map(RealScalar::new).toArray(RealScalar[]::new));
     }
 

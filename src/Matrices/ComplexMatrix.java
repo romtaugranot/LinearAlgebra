@@ -1,6 +1,7 @@
 package Matrices;
 
 import ComplexMath.ComplexScalar;
+import ComplexMath.RealScalar;
 import ComplexMath.Scalar;
 
 import java.util.ArrayList;
@@ -37,6 +38,10 @@ public class ComplexMatrix implements Matrix{
         for (int i = 0; i < m; i++){
             rowVectors.add(new ComplexVector(matrix[i]));
         }
+    }
+
+    public ComplexMatrix(ComplexMatrix complexMatrix) {
+        this((ComplexScalar[][]) complexMatrix.getMatrix());
     }
 
     @Override
@@ -78,7 +83,30 @@ public class ComplexMatrix implements Matrix{
         return new ComplexMatrix(this.getColVectors());
     }
 
+    @Override
+    public Matrix rowEchelon() {
+        return MatrixMathUtils.rowEchelon(this);
+    }
 
+    @Override
+    public Vector solve(Vector b) {
+        return null;
+    }
+
+    @Override
+    public int getRank() {
+        Matrix canonical = rowEchelon().transpose().rowEchelon();
+        ComplexScalar[][] matrix = (ComplexScalar[][]) canonical.getMatrix();
+        int count = 0;
+        for (int i = 0 ; i < matrix.length && i < matrix[0].length; i++){
+            if (!matrix[i][i].isZero()) {
+                count++;
+            } else{
+                break;
+            }
+        }
+        return count;
+    }
 
     @Override
     public List<Vector> getRowVectors() {
