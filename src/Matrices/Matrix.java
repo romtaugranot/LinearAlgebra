@@ -1,5 +1,6 @@
 package Matrices;
 
+import ComplexMath.BigRational;
 import ComplexMath.ComplexScalar;
 import ComplexMath.Scalar;
 
@@ -18,6 +19,10 @@ public interface Matrix {
     Matrix rowEchelon();
 
     Vector solve(Vector b);
+
+    default Vector getNullSpace(){
+        return this.solve(Vector.getZeroVector(getM()));
+    }
 
     static Matrix getZeroMatrix(int m, int n){
         ComplexScalar[][] matrix = new ComplexScalar[m][n];
@@ -40,6 +45,8 @@ public interface Matrix {
     int getN();
 
     int getRank();
+
+    BigRational getDeterminant();
 
 
 }

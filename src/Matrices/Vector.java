@@ -1,6 +1,7 @@
 package Matrices;
 
 import ComplexMath.BigRational;
+import ComplexMath.ComplexScalar;
 import ComplexMath.Scalar;
 
 import java.util.List;
@@ -39,6 +40,14 @@ public interface Vector {
                 return false;
         }
         return true;
+    }
+
+    static Vector getZeroVector(int size){
+        ComplexScalar[] zeros = new ComplexScalar[size];
+        for (Scalar s : zeros){
+            s = Scalar.getZero();
+        }
+        return new ComplexVector(zeros);
     }
 
 }

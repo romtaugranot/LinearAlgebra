@@ -1,5 +1,6 @@
 package Matrices;
 
+import ComplexMath.BigRational;
 import ComplexMath.ComplexScalar;
 import ComplexMath.RealScalar;
 import ComplexMath.Scalar;
@@ -88,8 +89,15 @@ public class ComplexMatrix implements Matrix{
         return MatrixMathUtils.rowEchelon(this);
     }
 
+    // TODO: 13/07/2022  
     @Override
     public Vector solve(Vector b) {
+        return null;
+    }
+
+    // TODO: 13/07/2022  
+    @Override
+    public BigRational getDeterminant() {
         return null;
     }
 
