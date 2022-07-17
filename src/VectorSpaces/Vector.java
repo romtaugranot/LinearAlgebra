@@ -1,8 +1,8 @@
-package Matrices;
+package VectorSpaces;
 
-import ComplexMath.BigRational;
-import ComplexMath.ComplexScalar;
-import ComplexMath.Scalar;
+import ComplexMath.FieldScalars.BigRational;
+import ComplexMath.FieldScalars.ComplexScalar;
+import ComplexMath.FieldScalars.Scalar;
 
 import java.util.List;
 
@@ -44,8 +44,8 @@ public interface Vector {
 
     static Vector getZeroVector(int size){
         ComplexScalar[] zeros = new ComplexScalar[size];
-        for (Scalar s : zeros){
-            s = Scalar.getZero();
+        for (int i = 0; i < size; i++){
+            zeros[i] = (ComplexScalar) Scalar.getZero();
         }
         return new ComplexVector(zeros);
     }

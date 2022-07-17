@@ -1,8 +1,10 @@
 package Matrices;
 
-import ComplexMath.BigRational;
-import ComplexMath.ComplexScalar;
-import ComplexMath.Scalar;
+import ComplexMath.FieldScalars.BigRational;
+import ComplexMath.FieldScalars.ComplexScalar;
+import ComplexMath.FieldScalars.Scalar;
+import VectorSpaces.Vector;
+import VectorSpaces.VectorSpace;
 
 import java.util.List;
 
@@ -18,9 +20,11 @@ public interface Matrix {
 
     Matrix rowEchelon();
 
-    Vector solve(Vector b);
+    Matrix canonicalRowEchelon();
 
-    default Vector getNullSpace(){
+    VectorSpace solve(Vector b);
+
+    default VectorSpace getNullSpace(){
         return this.solve(Vector.getZeroVector(getM()));
     }
 

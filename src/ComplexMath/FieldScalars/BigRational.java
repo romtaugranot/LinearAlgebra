@@ -1,4 +1,4 @@
-package ComplexMath;
+package ComplexMath.FieldScalars;
 
 
 /******************************************************************************

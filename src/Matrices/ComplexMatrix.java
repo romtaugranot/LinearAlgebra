@@ -1,9 +1,11 @@
 package Matrices;
 
-import ComplexMath.BigRational;
-import ComplexMath.ComplexScalar;
-import ComplexMath.RealScalar;
-import ComplexMath.Scalar;
+import ComplexMath.FieldScalars.BigRational;
+import ComplexMath.FieldScalars.ComplexScalar;
+import ComplexMath.FieldScalars.Scalar;
+import VectorSpaces.ComplexVector;
+import VectorSpaces.Vector;
+import VectorSpaces.VectorSpace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,13 +91,23 @@ public class ComplexMatrix implements Matrix{
         return MatrixMathUtils.rowEchelon(this);
     }
 
-    // TODO: 13/07/2022  
     @Override
-    public Vector solve(Vector b) {
-        return null;
+    public Matrix canonicalRowEchelon() {
+        return MatrixMathUtils.canonicalRowEchelon(this);
     }
 
-    // TODO: 13/07/2022  
+    // TODO: 13/07/2022
+    @Override
+    public VectorSpace solve(Vector b) {
+        try {
+            return MatrixMathUtils.solve(this, b);
+        } catch (ContradictionLineException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // TODO: 13/07/2022
     @Override
     public BigRational getDeterminant() {
         return null;
@@ -103,7 +115,7 @@ public class ComplexMatrix implements Matrix{
 
     @Override
     public int getRank() {
-        Matrix canonical = rowEchelon().transpose().rowEchelon();
+        Matrix canonical = rowEchelon().transpose().canonicalRowEchelon();
         ComplexScalar[][] matrix = (ComplexScalar[][]) canonical.getMatrix();
         int count = 0;
         for (int i = 0 ; i < matrix.length && i < matrix[0].length; i++){

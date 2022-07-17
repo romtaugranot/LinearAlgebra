@@ -1,10 +1,8 @@
-import ComplexMath.BigRational;
-import ComplexMath.ComplexScalar;
-import ComplexMath.RealScalar;
-import ComplexMath.Scalar;
+import ComplexMath.FieldScalars.ComplexScalar;
+import ComplexMath.FieldScalars.RealScalar;
+import ComplexMath.FieldScalars.Scalar;
 import Matrices.*;
-
-import java.util.Arrays;
+import VectorSpaces.*;
 
 public class Main {
 
@@ -14,19 +12,47 @@ public class Main {
         //checkComplexVector();
         //checkRealVector();
         //checkComplexMatrix();
-        checkRowEchelon();
+        //checkRowEchelon();
+        //checkSpaceVectors();
+        checkSolve();
+    }
+
+    private static void checkSolve() {
+        RealVector v1 = new RealVector("1","1","3","1");
+        RealVector v2 = new RealVector("1","1","-1","10");
+        RealVector v3 = new RealVector("1","1","1","2");
+        RealVector v4 = new RealVector("2","2","8","1");
+        Matrix mat1 = new ComplexMatrix(v1,v2,v3,v4);
+
+        mat1.solve(new RealVector("5","3","-3","18"));
+    }
+
+    private static void checkSpaceVectors() {
+        VectorSpace vs = new MyVectorSpace();
+        vs.add(new RealVector("1","2","3","4","5"));
+        vs.add(new RealVector("2","4","6","8","10"));
+        System.out.println(vs.size());
+        System.out.println(vs.contains(new RealVector("3","3","9","0","15")));
     }
 
     private static void checkRowEchelon() {
-        ComplexVector a = new ComplexVector(new ComplexScalar("0","7"), new RealScalar("5"), new RealScalar("0"), new RealScalar("7"), new RealScalar("1"));
-        ComplexVector b = new ComplexVector(new RealScalar("0"), new RealScalar("3"), new RealScalar("1"), new ComplexScalar("0","9"), new RealScalar("8"));
-        ComplexVector c = new ComplexVector(new RealScalar("0"), new ComplexScalar("0","0"), new RealScalar("0"), new RealScalar("0"), new RealScalar("0"));
-        ComplexVector d = new ComplexVector(new RealScalar("5"), new RealScalar("0"), new ComplexScalar("5", "8"), new RealScalar("2"), new RealScalar("1"));
-        ComplexVector e = new ComplexVector(new RealScalar("3"), new RealScalar("0"), new ComplexScalar("2","5"), new RealScalar("2"), new RealScalar("0"));
-        Matrix mat1 = new ComplexMatrix(a,b,c,d,e);
-        System.out.println(mat1);
-        System.out.println(mat1.rowEchelon());
-        System.out.println(mat1.getRank());
+//        ComplexVector a = new ComplexVector(new ComplexScalar("0","7"), new RealScalar("5"), new RealScalar("0"), new RealScalar("7"), new RealScalar("1"));
+//        ComplexVector b = new ComplexVector(new RealScalar("0"), new RealScalar("3"), new RealScalar("1"), new ComplexScalar("0","9"), new RealScalar("8"));
+//        ComplexVector c = new ComplexVector(new RealScalar("0"), new ComplexScalar("0","0"), new RealScalar("0"), new RealScalar("0"), new RealScalar("0"));
+//        ComplexVector d = new ComplexVector(new RealScalar("5"), new RealScalar("0"), new ComplexScalar("5", "8"), new RealScalar("2"), new RealScalar("1"));
+//        ComplexVector e = new ComplexVector(new RealScalar("3"), new RealScalar("0"), new ComplexScalar("2","5"), new RealScalar("2"), new RealScalar("0"));
+//        Matrix mat1 = new ComplexMatrix(a,b,c,d,e);
+//        System.out.println(mat1);
+//        System.out.println(mat1.rowEchelon());
+//        System.out.println(mat1.getRank());
+
+        RealVector v1 = new RealVector("1","1","3","1","5");
+        RealVector v2 = new RealVector("1","1","-1","10","3");
+        RealVector v3 = new RealVector("1","1","1","2","-3");
+        RealVector v4 = new RealVector("2","2","8","1","18");
+        Matrix mat = new ComplexMatrix(v1,v2,v3,v4);
+        System.out.println(mat.canonicalRowEchelon());
+
 
     }
 

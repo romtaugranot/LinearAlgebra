@@ -1,14 +1,14 @@
-package Matrices;
+package VectorSpaces;
 
-import ComplexMath.BigRational;
-import ComplexMath.RealScalar;
-import ComplexMath.Scalar;
+import ComplexMath.FieldScalars.BigRational;
+import ComplexMath.FieldScalars.RealScalar;
+import ComplexMath.FieldScalars.Scalar;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RealVector extends ComplexVector{
+public class RealVector extends ComplexVector {
 
     public RealVector(List<RealScalar> entries){
         super(entries.stream().map(x -> (Scalar) x).collect(Collectors.toList()));

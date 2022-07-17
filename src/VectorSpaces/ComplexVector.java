@@ -1,14 +1,14 @@
-package Matrices;
+package VectorSpaces;
 
-import ComplexMath.BigRational;
-import ComplexMath.ComplexScalar;
-import ComplexMath.Scalar;
+import ComplexMath.FieldScalars.BigRational;
+import ComplexMath.FieldScalars.ComplexScalar;
+import ComplexMath.FieldScalars.Scalar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ComplexVector implements Vector{
+public class ComplexVector implements Vector {
 
     public final int size;
 

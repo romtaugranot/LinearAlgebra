@@ -1,4 +1,4 @@
-package ComplexMath;
+package ComplexMath.FieldScalars;
 
 public interface Scalar {
     
@@ -10,7 +10,7 @@ public interface Scalar {
 
     Scalar mul(Scalar other);
 
-    default Scalar div(Scalar other) throws ScalarDivisionByZeroException{
+    default Scalar div(Scalar other) throws ScalarDivisionByZeroException {
         if (other.equal(getZero())) throw new ScalarDivisionByZeroException();
         return this.mul(other.getInverse());
     }

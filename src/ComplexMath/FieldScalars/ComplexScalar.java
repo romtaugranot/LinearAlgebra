@@ -1,6 +1,6 @@
-package ComplexMath;
+package ComplexMath.FieldScalars;
 
-public class ComplexScalar implements Scalar{
+public class ComplexScalar implements Scalar {
 
     private BigRational real, imaginary;
 
@@ -33,7 +33,7 @@ public class ComplexScalar implements Scalar{
     }
 
     @Override
-    public Scalar getInverse() throws ScalarDivisionByZeroException{
+    public Scalar getInverse() throws ScalarDivisionByZeroException {
         if (this.equals(Scalar.getZero())) throw new ScalarDivisionByZeroException();
         return new ComplexScalar( real.times(new BigRational(getRadiusSquared().toString()).reciprocal()), imaginary.times(new BigRational(getRadiusSquared().toString()).reciprocal()).negate());
     }
