@@ -3,9 +3,13 @@ import ComplexMath.FieldScalars.RealScalar;
 import ComplexMath.FieldScalars.Scalar;
 import ComplexMath.Polynomials.ComplexPolynomial;
 import ComplexMath.Polynomials.Polynomial;
-import Matrices.*;
-import Matrices.VectorSets.*;
-import Matrices.VectorSets.VectorSpaces.*;
+import Matrices.ComplexMatrix;
+import Matrices.Matrix;
+import Matrices.VectorSets.ComplexVector;
+import Matrices.VectorSets.RealVector;
+import Matrices.VectorSets.Vector;
+import Matrices.VectorSets.VectorSpaces.MyVectorSpace;
+import Matrices.VectorSets.VectorSpaces.VectorSpace;
 
 public class Main {
 
@@ -22,13 +26,13 @@ public class Main {
     }
 
     private static void checkSolve() {
-        ComplexVector v1 = new ComplexVector(new RealScalar("1"),new ComplexScalar("3", "1"),new RealScalar("3"),new RealScalar("2"));
-        ComplexVector v2 = new ComplexVector(new RealScalar("2"),new RealScalar("6"),new ComplexScalar("0", "9"),new RealScalar("7"));
-        ComplexVector v3 = new ComplexVector(new RealScalar("-1"),new ComplexScalar("-3", "8"),new RealScalar("3"),new RealScalar("4"));
+        ComplexVector v1 = new ComplexVector(new RealScalar("1"), new ComplexScalar("3", "1"), new RealScalar("3"), new RealScalar("2"));
+        ComplexVector v2 = new ComplexVector(new RealScalar("2"), new RealScalar("6"), new ComplexScalar("0", "9"), new RealScalar("7"));
+        ComplexVector v3 = new ComplexVector(new RealScalar("-1"), new ComplexScalar("-3", "8"), new RealScalar("3"), new RealScalar("4"));
 
-        Matrix mat1 = new ComplexMatrix(v1,v2,v3);
+        Matrix mat1 = new ComplexMatrix(v1, v2, v3);
 
-        System.out.println(mat1.solve(new RealVector("1","5","5")));
+        System.out.println(mat1.solve(new RealVector("1", "5", "5")));
     }
 
     private static void checkPoly() {
@@ -40,15 +44,15 @@ public class Main {
         System.out.println(p1.add(p2));
         System.out.println(p1.mul(p2));
         System.out.println(p1.mulByScalar(new ComplexScalar("1", "2")));
-        System.out.println(p1.mulByScalar(new ComplexScalar("1", "2")).calculate(new ComplexScalar("1","2")));
+        System.out.println(p1.mulByScalar(new ComplexScalar("1", "2")).calculate(new ComplexScalar("1", "2")));
     }
 
     private static void checkSpaceVectors() {
         VectorSpace vs = new MyVectorSpace();
-        vs.add(new RealVector("1","2","3","4","5"));
-        vs.add(new RealVector("2","4","6","8","10"));
+        vs.add(new RealVector("1", "2", "3", "4", "5"));
+        vs.add(new RealVector("2", "4", "6", "8", "10"));
         System.out.println(vs.getDim());
-        System.out.println(vs.contains(new RealVector("3","3","9","0","15")));
+        System.out.println(vs.contains(new RealVector("3", "3", "9", "0", "15")));
     }
 
     private static void checkRowEchelon() {
@@ -62,19 +66,19 @@ public class Main {
 //        System.out.println(mat1.rowEchelon());
 //        System.out.println(mat1.getRank());
 
-        RealVector v1 = new RealVector("1","1","3","1","5");
-        RealVector v2 = new RealVector("1","1","-1","10","3");
-        RealVector v3 = new RealVector("1","1","1","2","-3");
-        RealVector v4 = new RealVector("2","2","8","1","18");
-        Matrix mat = new ComplexMatrix(v1,v2,v3,v4);
+        RealVector v1 = new RealVector("1", "1", "3", "1", "5");
+        RealVector v2 = new RealVector("1", "1", "-1", "10", "3");
+        RealVector v3 = new RealVector("1", "1", "1", "2", "-3");
+        RealVector v4 = new RealVector("2", "2", "8", "1", "18");
+        Matrix mat = new ComplexMatrix(v1, v2, v3, v4);
         System.out.println(mat.canonicalRowEchelon());
 
 
     }
 
     private static void checkComplexMatrix() {
-        RealVector a = new RealVector("1","2","3","4","5");
-        Matrix mat1 = new ComplexMatrix(a,a,a);
+        RealVector a = new RealVector("1", "2", "3", "4", "5");
+        Matrix mat1 = new ComplexMatrix(a, a, a);
         System.out.println(mat1);
 
         System.out.println(mat1.mul(mat1.transpose()));
@@ -82,31 +86,31 @@ public class Main {
     }
 
     private static void checkRealVector() {
-        Vector a = new RealVector("1","2","3","4","5");
-        Vector b = new ComplexVector(new ComplexScalar("10","9"),
-                new ComplexScalar("8","7"),new ComplexScalar("6","5"),
-                new ComplexScalar("4","3"),new ComplexScalar("2","1"));
+        Vector a = new RealVector("1", "2", "3", "4", "5");
+        Vector b = new ComplexVector(new ComplexScalar("10", "9"),
+                new ComplexScalar("8", "7"), new ComplexScalar("6", "5"),
+                new ComplexScalar("4", "3"), new ComplexScalar("2", "1"));
         System.out.println(a);
         System.out.println(b);
         System.out.println(a.add(b));
         System.out.println(a.dotProduct(b));
         System.out.println(b.dotProduct(a));
-        System.out.println(a.mul(new ComplexScalar("1","2")));
+        System.out.println(a.mul(new ComplexScalar("1", "2")));
     }
 
     private static void checkComplexVector() {
-        Vector a = new ComplexVector(new ComplexScalar("1","2"),
-                new ComplexScalar("3","4"),new ComplexScalar("5","6"),
-                new ComplexScalar("7","8"),new ComplexScalar("9","10"));
-        Vector b = new ComplexVector(new ComplexScalar("10","9"),
-                new ComplexScalar("8","7"),new ComplexScalar("6","5"),
-                new ComplexScalar("4","3"),new ComplexScalar("2","1"));
+        Vector a = new ComplexVector(new ComplexScalar("1", "2"),
+                new ComplexScalar("3", "4"), new ComplexScalar("5", "6"),
+                new ComplexScalar("7", "8"), new ComplexScalar("9", "10"));
+        Vector b = new ComplexVector(new ComplexScalar("10", "9"),
+                new ComplexScalar("8", "7"), new ComplexScalar("6", "5"),
+                new ComplexScalar("4", "3"), new ComplexScalar("2", "1"));
         System.out.println(a.mul(new RealScalar("2")));
     }
 
     private static void checkRealComplex() {
         Scalar a = new RealScalar("1");
-        Scalar b = new ComplexScalar("1","1");
+        Scalar b = new ComplexScalar("1", "1");
         System.out.println(a.equal(Scalar.getZero()));
         System.out.println(a.add(b));
         System.out.println(a.mul(b));

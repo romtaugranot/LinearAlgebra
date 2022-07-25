@@ -12,7 +12,7 @@ public class ComplexVector implements Vector {
 
     public final int size;
 
-    private ArrayList<ComplexScalar> entries;
+    private final ArrayList<ComplexScalar> entries;
 
     public ComplexVector(List<Scalar> entries) {
         this.entries = new ArrayList<>();

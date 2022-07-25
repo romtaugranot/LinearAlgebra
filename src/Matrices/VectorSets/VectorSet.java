@@ -7,14 +7,14 @@ import java.util.Collection;
 
 public interface VectorSet {
 
-    boolean contains(Object o);
-
-    boolean containsAll(Collection<?> c);
-
-    static VectorSet getZeroSet(int m){
-        VectorSpace v =  new MyVectorSpace();
+    static VectorSet getZeroSet(int m) {
+        VectorSpace v = new MyVectorSpace();
         v.add(Vector.getZeroVector(m));
         return v;
     }
+
+    boolean contains(Object o);
+
+    boolean containsAll(Collection<?> c);
 
 }

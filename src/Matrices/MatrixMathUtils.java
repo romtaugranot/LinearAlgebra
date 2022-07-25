@@ -3,27 +3,31 @@ package Matrices;
 import ComplexMath.FieldScalars.ComplexScalar;
 import ComplexMath.FieldScalars.RealScalar;
 import ComplexMath.FieldScalars.Scalar;
-import Matrices.VectorSets.*;
+import Matrices.VectorSets.ComplexVector;
+import Matrices.VectorSets.MyVectorSet;
 import Matrices.VectorSets.Vector;
-import Matrices.VectorSets.VectorSpaces.*;
+import Matrices.VectorSets.VectorSet;
+import Matrices.VectorSets.VectorSpaces.MyVectorSpace;
+import Matrices.VectorSets.VectorSpaces.VectorSpace;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MatrixMathUtils {
 
     /**********************Row Echelon Code*********************************/
-    public static Matrix rowEchelon(Matrix matrix){
+    public static Matrix rowEchelon(Matrix matrix) {
         List<Vector> rowEchelon = matrix.getRowVectors();
-        for (int row = 0; row < rowEchelon.size(); row++){
+        for (int row = 0; row < rowEchelon.size(); row++) {
             // get row with leading entry.
-            int[] co = getLeadingRow(rowEchelon,row);
+            int[] co = getLeadingRow(rowEchelon, row);
             if (co[0] == -1) continue;
             rowEchelon.set(co[0], rowEchelon.get(co[0]).mul(rowEchelon.get(co[0]).getEntries().get(co[1]).getInverse()));
             // switch that row with the first row.
             switchRows(rowEchelon, co[0], row);
             Scalar leading = rowEchelon.get(row).getEntries().get(co[1]);
-            for (int i = row + 1; i < rowEchelon.size(); i++){
+            for (int i = row + 1; i < rowEchelon.size(); i++) {
                 Scalar belowLeading = rowEchelon.get(i).getEntries().get(co[1]);
                 if (!belowLeading.isZero()) {
                     Scalar div = belowLeading.div(leading);
@@ -36,12 +40,12 @@ public class MatrixMathUtils {
 
     public static Matrix canonicalRowEchelon(Matrix matrix) {
         List<Vector> rowEchelon = matrix.rowEchelon().getRowVectors();
-        for (int row = 0; row < rowEchelon.size(); row++){
+        for (int row = 0; row < rowEchelon.size(); row++) {
             // get row with leading entry.
-            int[] co = getLeadingRow(rowEchelon,row);
+            int[] co = getLeadingRow(rowEchelon, row);
             if (co[0] == -1) break;
             Scalar leading = rowEchelon.get(co[0]).getEntries().get(co[1]);
-            for (int i = 0; i < co[0]; i++){
+            for (int i = 0; i < co[0]; i++) {
                 Scalar aboveLeading = rowEchelon.get(i).getEntries().get(co[1]);
                 if (!aboveLeading.isZero()) {
                     Scalar div = aboveLeading.div(leading);
@@ -52,22 +56,23 @@ public class MatrixMathUtils {
         return new ComplexMatrix(rowEchelon);
     }
 
-    private static int[] getLeadingRow(List<Vector> rowEchelon,int row) {
+    private static int[] getLeadingRow(List<Vector> rowEchelon, int row) {
         Matrix mat = new ComplexMatrix(rowEchelon);
         List<Vector> cols = mat.getColVectors();
-        for(int j = 0; j < cols.size(); j++){
+        for (int j = 0; j < cols.size(); j++) {
             Vector v = cols.get(j);
-            if (!v.isZero()){
+            if (!v.isZero()) {
                 List<Scalar> entries = v.getEntries();
-                for (int i = row; i < entries.size(); i++){
-                    if (!entries.get(i).equal(Scalar.getZero())){
-                        return new int[]{i,j};}
+                for (int i = row; i < entries.size(); i++) {
+                    if (!entries.get(i).equal(Scalar.getZero())) {
+                        return new int[]{i, j};
+                    }
                 }
             }
         }
 
         // should reach here if and only if row is zero
-        return new int[]{-1,-1};
+        return new int[]{-1, -1};
     }
 
     private static void switchRows(List<Vector> rowEchelon, int row1, int row2) {
@@ -81,7 +86,7 @@ public class MatrixMathUtils {
 
     /**********************Linear Equations Solver*********************************/
 
-    public static VectorSet solve(Matrix matrix, Vector b) throws ContradictionLineException{
+    public static VectorSet solve(Matrix matrix, Vector b) throws ContradictionLineException {
         //expand matrix.
         Matrix expandedMatrix = expandMatrix(matrix, b);
         //row echelon the expanded matrix.
@@ -99,22 +104,22 @@ public class MatrixMathUtils {
         System.out.println(indicesOfFreeVar);
         System.out.println();
 
-        Vector solToFixedVar =  calculateVectors(indicesOfFreeVar, expandedMatrix.getColVectors());
+        Vector solToFixedVar = calculateVector(indicesOfFreeVar, expandedMatrix.getColVectors());
         int j = 0;
         Scalar[] co = new ComplexScalar[matrix.getN()];
-        for (int i = 0; i < matrix.getN(); i++){
+        for (int i = 0; i < matrix.getN(); i++) {
             if (!indicesOfFreeVar.contains(i))
                 co[i] = solToFixedVar.getEntries().get(j++);
             else co[i] = Scalar.getZero();
         }
         System.out.println(new ComplexVector(co));
 
-        return new MyVectorSet((VectorSpace) matrix.getNullSpace(), new ComplexVector(co));
+        return new MyVectorSet(matrix.getNullSpace(), new ComplexVector(co));
     }
 
-    private static Vector calculateVectors(List<Integer> indicesOfFreeVar, List<Vector> cols) {
+    private static Vector calculateVector(List<Integer> indicesOfFreeVar, List<Vector> cols) {
         List<Vector> newCols = new ArrayList<>();
-        for(int i = 0; i < cols.size(); i++){
+        for (int i = 0; i < cols.size(); i++) {
             if (!indicesOfFreeVar.contains(i)) {
                 newCols.add(cols.get(i));
             }
@@ -126,11 +131,11 @@ public class MatrixMathUtils {
     }
 
     /**
-     * @pre: v1.getSize() == v2.getSize()
      * @param v1
      * @param v2
      * @return $ret == true implies for all 0 <= i,j < v1.getSize(),
-     *      v1.getEntries().get(i).divide(v2.getEntries().get(i)).equals(v1.getEntries().get(j).divide(v2.getEntries().get(j))
+     * v1.getEntries().get(i).divide(v2.getEntries().get(i)).equals(v1.getEntries().get(j).divide(v2.getEntries().get(j))
+     * @pre: v1.getSize() == v2.getSize()
      */
     public static boolean divide(Vector v1, Vector v2) {
         List<Scalar> entries1 = v1.getEntries();
@@ -141,12 +146,12 @@ public class MatrixMathUtils {
         do {
             Scalar one = entries1.get(i);
             Scalar second = entries2.get(i);
-            if (one.equal(Scalar.getZero())){
+            if (one.equal(Scalar.getZero())) {
                 if (!second.equal(Scalar.getZero())) return false;
-            }else {
+            } else {
                 if (second.equal(Scalar.getZero())) return false;
-                else{
-                    if (i == 0){
+                else {
+                    if (i == 0) {
                         s = one.div(second);
                     } else {
                         if (!one.div(second).equal(s)) return false;
@@ -160,12 +165,12 @@ public class MatrixMathUtils {
 
     private static boolean checkForContradictionLines(Matrix matrix) {
         List<Vector> rows = matrix.getRowVectors();
-        for (Vector v : rows){
+        for (Vector v : rows) {
             List<Scalar> entries = v.getEntries();
-            if (!entries.get(entries.size() - 1).equal(Scalar.getZero())){
+            if (!entries.get(entries.size() - 1).equal(Scalar.getZero())) {
                 boolean flag = false;
-                for (int i = 0; i < entries.size() - 1; i++){
-                    if (!entries.get(i).equal(Scalar.getZero())){
+                for (int i = 0; i < entries.size() - 1; i++) {
+                    if (!entries.get(i).equal(Scalar.getZero())) {
                         flag = true;
                     }
                 }
@@ -192,14 +197,14 @@ public class MatrixMathUtils {
         //row echelon the expanded matrix.
         expandedMatrix = canonicalRowEchelon(expandedMatrix);
 
-        return expandedMatrix.getColVectors().get(expandedMatrix.getColVectors().size()- 1);
+        return expandedMatrix.getColVectors().get(expandedMatrix.getColVectors().size() - 1);
     }
 
-    public static VectorSpace solveNullSpace(Matrix matrix) throws ContradictionLineException{
+    public static VectorSpace solveNullSpace(Matrix matrix) throws ContradictionLineException {
         int m = matrix.getM();
         int n = matrix.getN();
 
-        if (matrix.equals(Matrix.getZeroMatrix(m,n)))
+        if (matrix.equals(Matrix.getZeroMatrix(m, n)))
             return (VectorSpace) VectorSet.getZeroSet(m);
 
         int numOfFreeVariables = n - matrix.getRank();
@@ -222,17 +227,17 @@ public class MatrixMathUtils {
         // to zero and solve for the pivot variables. The resulting solution will give a
         // vector to be included in the basis.
         calculateVectorsNullSpace(vs, indicesOfFreeVar, matrix);
-        
+
         return vs;
     }
 
     private static void calculateVectorsNullSpace(VectorSpace vs, List<Integer> indicesOfFreeVar, Matrix matrix) {
-        for (int i : indicesOfFreeVar){
+        for (int i : indicesOfFreeVar) {
 
             List<Vector> newCols = matrix.getColVectors();
             Scalar[] co = new ComplexScalar[matrix.getN()];
-            for (int col : indicesOfFreeVar){
-                if (col != i){
+            for (int col : indicesOfFreeVar) {
+                if (col != i) {
                     newCols.set(col, Vector.getZeroVector(matrix.getM()));
                     co[col] = Scalar.getZero();
                 } else {
@@ -243,8 +248,8 @@ public class MatrixMathUtils {
             List<Vector> rowVec = new ComplexMatrix(newCols).transpose().getRowVectors();
 
             int j = 0;
-            for (int col = 0; col < matrix.getN(); col++){
-                if (!indicesOfFreeVar.contains(col)){
+            for (int col = 0; col < matrix.getN(); col++) {
+                if (!indicesOfFreeVar.contains(col)) {
                     Scalar sum = sumEntries(rowVec.get(j++));
                     co[col] = sum.sub(new RealScalar("1")).getMinus();
                 }
@@ -256,7 +261,7 @@ public class MatrixMathUtils {
 
     private static Scalar sumEntries(Vector vector) {
         Scalar alpha = Scalar.getZero();
-        for (int i = 0; i < vector.getEntries().size(); i++){
+        for (int i = 0; i < vector.getEntries().size(); i++) {
             alpha = alpha.add(vector.getEntries().get(i));
         }
         return alpha;
@@ -265,14 +270,15 @@ public class MatrixMathUtils {
     private static List<Integer> indexOfFreeVar(Matrix matrix) {
         List<Integer> freeVar = new ArrayList<>();
         int row = 0;
-        for (int col = 0; col < matrix.getN(); col++){
+        for (int col = 0; col < matrix.getN(); col++) {
             if (row == matrix.getM())
                 freeVar.add(col);
-            else if (matrix.getMatrix()[row][col].isZero()){
+            else if (matrix.getMatrix()[row][col].isZero()) {
                 freeVar.add(col);
             } else row++;
         }
         return freeVar;
     }
+    /****************************End Of Equation Solver************************************/
 
 }

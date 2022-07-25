@@ -1,10 +1,14 @@
 package ComplexMath.FieldScalars;
 
 public interface Scalar {
-    
+
+    static Scalar getZero() {
+        return new ComplexScalar(BigRational.ZERO, BigRational.ZERO);
+    }
+
     Scalar add(Scalar other);
 
-    default Scalar sub(Scalar other){
+    default Scalar sub(Scalar other) {
         return this.add(other.getMinus());
     }
 
@@ -25,21 +29,22 @@ public interface Scalar {
 
     BigRational getImaginary();
 
-    static Scalar getZero(){
-        return new ComplexScalar(BigRational.ZERO,BigRational.ZERO);
-    }
-
-    default boolean equal(Scalar other){
+    default boolean equal(Scalar other) {
         return this.getReal().equals(other.getReal())
                 && this.getImaginary().equals(other.getImaginary());
     }
 
-    default boolean isZero(){
+    default boolean isZero() {
         return this.equal(getZero());
     }
 
-    default boolean isReal(){
+
+    default boolean isReal() {
         return getImaginary().equals(BigRational.ZERO);
     }
-    
+
+    default boolean isImaginary() {
+        return getReal().equals(BigRational.ZERO);
+    }
+
 }

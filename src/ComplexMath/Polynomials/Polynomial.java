@@ -7,6 +7,14 @@ import java.util.List;
 
 public interface Polynomial {
 
+    static Polynomial getZeroPolynomial(int degree) {
+        List<Scalar> coefficients = new ArrayList<>();
+        for (int i = 0; i < degree; i++) {
+            coefficients.add(Scalar.getZero());
+        }
+        return new ComplexPolynomial(coefficients);
+    }
+
     int getDegree();
 
     List<Scalar> getCoefficients();
@@ -16,14 +24,6 @@ public interface Polynomial {
     Polynomial mul(Polynomial other);
 
     Polynomial mulByScalar(Scalar other);
-
-    static Polynomial getZeroPolynomial(int degree){
-        List<Scalar> coefficients = new ArrayList<>();
-        for (int i = 0; i < degree; i++){
-            coefficients.add(Scalar.getZero());
-        }
-        return new ComplexPolynomial(coefficients);
-    }
 
     Scalar calculate(Scalar alpha);
 

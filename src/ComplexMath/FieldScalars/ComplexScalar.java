@@ -2,19 +2,20 @@ package ComplexMath.FieldScalars;
 
 public class ComplexScalar implements Scalar {
 
-    private BigRational real, imaginary;
+    private final BigRational real;
+    private final BigRational imaginary;
 
-    public ComplexScalar(BigRational real, BigRational imaginary){
+    public ComplexScalar(BigRational real, BigRational imaginary) {
         this.real = new BigRational(real.toString());
         this.imaginary = new BigRational(imaginary.toString());
     }
 
-    public ComplexScalar(String real, String imaginary){
+    public ComplexScalar(String real, String imaginary) {
         this.real = new BigRational(real);
         this.imaginary = new BigRational(imaginary);
     }
 
-    public ComplexScalar(Scalar scalar){
+    public ComplexScalar(Scalar scalar) {
         this.real = scalar.getReal();
         this.imaginary = scalar.getImaginary();
     }
@@ -35,7 +36,7 @@ public class ComplexScalar implements Scalar {
     @Override
     public Scalar getInverse() throws ScalarDivisionByZeroException {
         if (this.equals(Scalar.getZero())) throw new ScalarDivisionByZeroException();
-        return new ComplexScalar( real.times(new BigRational(getRadiusSquared().toString()).reciprocal()), imaginary.times(new BigRational(getRadiusSquared().toString()).reciprocal()).negate());
+        return new ComplexScalar(real.times(new BigRational(getRadiusSquared().toString()).reciprocal()), imaginary.times(new BigRational(getRadiusSquared().toString()).reciprocal()).negate());
     }
 
     @Override
@@ -44,14 +45,14 @@ public class ComplexScalar implements Scalar {
     }
 
     /**
-     * @pre: n >= 0, n is an integer.
      * @param n
      * @return the n-th power of the scalar.
+     * @pre: n >= 0, n is an integer.
      */
     @Override
     public Scalar pow(int n) {
         Scalar ans = new RealScalar("1");
-        for (int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             ans = ans.mul(this);
         }
         return ans;
@@ -59,14 +60,6 @@ public class ComplexScalar implements Scalar {
 
     private BigRational getRadiusSquared() {
         return real.times(real).plus(imaginary.times(imaginary));
-    }
-
-    public boolean isReal(){
-        return imaginary.equals(BigRational.ZERO);
-    }
-
-    public boolean isImaginary(){
-        return real.equals(BigRational.ZERO);
     }
 
     @Override
@@ -83,13 +76,13 @@ public class ComplexScalar implements Scalar {
     public String toString() {
         if (isReal()) return real.toString();
         if (isImaginary()) return imaginary + "i";
-        if (imaginary.isInteger()){
-            if (imaginary.compareTo(BigRational.ZERO) >= 0){
+        if (imaginary.isInteger()) {
+            if (imaginary.compareTo(BigRational.ZERO) >= 0) {
                 return "(" + real + " + " + imaginary + "i)";
             }
             return "(" + real + " " + imaginary + "i)";
-        } else{
-            if (imaginary.compareTo(BigRational.ZERO) >= 0){
+        } else {
+            if (imaginary.compareTo(BigRational.ZERO) >= 0) {
                 return "(" + real + " + " + imaginary.getNumerator() + "i/" + imaginary.getDenominator() + ")";
             }
             return "(" + real + " " + imaginary.getNumerator() + "i/" + imaginary.getDenominator() + ")";

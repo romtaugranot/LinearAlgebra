@@ -8,6 +8,14 @@ import java.util.List;
 
 public interface Vector {
 
+    static Vector getZeroVector(int size) {
+        ComplexScalar[] zeros = new ComplexScalar[size];
+        for (int i = 0; i < size; i++) {
+            zeros[i] = (ComplexScalar) Scalar.getZero();
+        }
+        return new ComplexVector(zeros);
+    }
+
     Vector add(Vector other);
 
     default Vector sub(Vector other) {
@@ -40,14 +48,6 @@ public interface Vector {
                 return false;
         }
         return true;
-    }
-
-    static Vector getZeroVector(int size) {
-        ComplexScalar[] zeros = new ComplexScalar[size];
-        for (int i = 0; i < size; i++) {
-            zeros[i] = (ComplexScalar) Scalar.getZero();
-        }
-        return new ComplexVector(zeros);
     }
 
 }

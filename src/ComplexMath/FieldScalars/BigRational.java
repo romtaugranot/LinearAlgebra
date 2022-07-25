@@ -22,8 +22,8 @@ import java.util.Objects;
 public class BigRational implements Comparable<BigRational> {
 
     public final static BigRational ZERO = new BigRational(0);
-    public final static BigRational ONE  = new BigRational(1);
-    public final static BigRational TWO  = new BigRational(2);
+    public final static BigRational ONE = new BigRational(1);
+    public final static BigRational TWO = new BigRational(2);
 
     private BigInteger num;   // the numerator
     private BigInteger den;   // the denominator (always a positive integer)
@@ -77,7 +77,7 @@ public class BigRational implements Comparable<BigRational> {
     // return string representation of (this)
     public String toString() {
         if (isInteger()) return num + "";
-        else                            return num + "/" + den;
+        else return num + "/" + den;
     }
 
     // return { -1, 0, + 1 } if a < b, a = b, or a > b
@@ -87,9 +87,17 @@ public class BigRational implements Comparable<BigRational> {
     }
 
     // is this BigRational negative, zero, or positive?
-    public boolean isZero()     { return num.signum() == 0; }
-    public boolean isPositive() { return num.signum() >  0; }
-    public boolean isNegative() { return num.signum() <  0; }
+    public boolean isZero() {
+        return num.signum() == 0;
+    }
+
+    public boolean isPositive() {
+        return num.signum() > 0;
+    }
+
+    public boolean isNegative() {
+        return num.signum() < 0;
+    }
 
     // is this Rational object equal to y?
     public boolean equals(Object y) {
@@ -115,7 +123,7 @@ public class BigRational implements Comparable<BigRational> {
     // return a + b
     public BigRational plus(BigRational b) {
         BigRational a = this;
-        BigInteger numerator   = a.num.multiply(b.den).add(b.num.multiply(a.den));
+        BigInteger numerator = a.num.multiply(b.den).add(b.num.multiply(a.den));
         BigInteger denominator = a.den.multiply(b.den);
         return new BigRational(numerator, denominator);
     }
@@ -151,9 +159,9 @@ public class BigRational implements Comparable<BigRational> {
     // return double reprentation (within given precision)
     public double doubleValue() {
         int SCALE = 32;        // number of digits after the decimal place
-        BigDecimal numerator   = new BigDecimal(num);
+        BigDecimal numerator = new BigDecimal(num);
         BigDecimal denominator = new BigDecimal(den);
-        BigDecimal quotient    = numerator.divide(denominator, SCALE, RoundingMode.HALF_EVEN);
+        BigDecimal quotient = numerator.divide(denominator, SCALE, RoundingMode.HALF_EVEN);
         return quotient.doubleValue();
     }
 

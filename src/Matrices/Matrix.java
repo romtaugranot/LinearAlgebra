@@ -1,6 +1,5 @@
 package Matrices;
 
-import ComplexMath.FieldScalars.BigRational;
 import ComplexMath.FieldScalars.ComplexScalar;
 import ComplexMath.FieldScalars.Scalar;
 import Matrices.VectorSets.Vector;
@@ -10,6 +9,16 @@ import Matrices.VectorSets.VectorSpaces.VectorSpace;
 import java.util.List;
 
 public interface Matrix {
+
+    static Matrix getZeroMatrix(int m, int n) {
+        ComplexScalar[][] matrix = new ComplexScalar[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = (ComplexScalar) Scalar.getZero();
+            }
+        }
+        return new ComplexMatrix(matrix);
+    }
 
     Matrix add(Matrix other);
 
@@ -29,16 +38,6 @@ public interface Matrix {
 
     Vector mulByVector(Vector v);
 
-    static Matrix getZeroMatrix(int m, int n){
-        ComplexScalar[][] matrix = new ComplexScalar[m][n];
-        for (int i = 0; i < m; i++){
-            for (int j = 0; j < n; j++){
-                matrix[i][j] = (ComplexScalar) Scalar.getZero();
-            }
-        }
-        return new ComplexMatrix(matrix);
-    }
-
     List<Vector> getRowVectors();
 
     List<Vector> getColVectors();
@@ -51,7 +50,7 @@ public interface Matrix {
 
     int getRank();
 
-    BigRational getDeterminant();
+    Scalar getDeterminant();
 
 
 }

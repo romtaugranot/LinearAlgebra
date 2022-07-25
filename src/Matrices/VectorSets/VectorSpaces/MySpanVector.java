@@ -9,9 +9,9 @@ import java.util.Collection;
 
 public class MySpanVector implements SpanVector {
 
-    private Vector v;
+    private final Vector v;
 
-    public MySpanVector(Vector v){
+    public MySpanVector(Vector v) {
         this.v = new ComplexVector(v.getEntries());
     }
 

@@ -9,34 +9,34 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MyVectorSet implements VectorSet{
+public class MyVectorSet implements VectorSet {
 
     private final Set<Vector> vectors;
 
     private VectorSpace span = new MyVectorSpace();
 
-    public MyVectorSet(){
+    public MyVectorSet() {
         vectors = new HashSet<>();
     }
 
-    public MyVectorSet(VectorSpace vs, Vector... vectors){
+    public MyVectorSet(VectorSpace vs, Vector... vectors) {
         this.vectors = new HashSet<>(Arrays.asList(vectors));
         span = new MyVectorSpace();
-        for (SpanVector v : vs.getBase()){
+        for (SpanVector v : vs.getBase()) {
             span.add(v.getV());
         }
     }
 
-    public MyVectorSet(Vector... vectors){
+    public MyVectorSet(Vector... vectors) {
         this.vectors = new HashSet<>(Arrays.asList(vectors));
         span = new MyVectorSpace();
     }
 
-    public boolean add(Vector v){
+    public boolean add(Vector v) {
         return vectors.add(v);
     }
 
-    public boolean spanAdd(Vector span){
+    public boolean spanAdd(Vector span) {
         return this.span.add(span);
     }
 

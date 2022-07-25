@@ -54,7 +54,7 @@ public class MyVectorSpace implements VectorSpace {
         if (obj == null) return false;
         if (!(obj instanceof MyVectorSpace other)) return false;
         if (other.base.size() != this.base.size()) return false;
-        for (SpanVector s : base){
+        for (SpanVector s : base) {
             if (!other.base.contains(s))
                 return false;
         }
@@ -71,7 +71,7 @@ public class MyVectorSpace implements VectorSpace {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("span[");
-        for (SpanVector s : base){
+        for (SpanVector s : base) {
             sb.append(s.getV()).append(", ");
         }
         sb.reverse();

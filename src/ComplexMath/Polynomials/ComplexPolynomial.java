@@ -8,19 +8,19 @@ import Matrices.VectorSets.ComplexVector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComplexPolynomial implements Polynomial{
+public class ComplexPolynomial implements Polynomial {
 
-    private ComplexVector co;
+    private final ComplexVector co;
 
-    public ComplexPolynomial(Scalar... co){
+    public ComplexPolynomial(Scalar... co) {
         this.co = new ComplexVector(co);
     }
 
-    public ComplexPolynomial(ComplexPolynomial p){
+    public ComplexPolynomial(ComplexPolynomial p) {
         this.co = new ComplexVector(p.getCoefficients());
     }
 
-    public ComplexPolynomial(List<Scalar> co){
+    public ComplexPolynomial(List<Scalar> co) {
         this.co = new ComplexVector(co);
     }
 
@@ -39,9 +39,9 @@ public class ComplexPolynomial implements Polynomial{
     public Polynomial add(Polynomial other) {
         List<Scalar> l1 = co.getEntries();
         List<Scalar> l2 = other.getCoefficients();
-        if (l1.size() >= l2.size()){
+        if (l1.size() >= l2.size()) {
             List<Scalar> coefficients = new ArrayList<>(List.copyOf(l1));
-            for (int i = 0 ; i < l2.size(); i++){
+            for (int i = 0; i < l2.size(); i++) {
                 coefficients.set(i, l1.get(i).add(l2.get(i)));
             }
             return new ComplexPolynomial(coefficients);
@@ -54,10 +54,10 @@ public class ComplexPolynomial implements Polynomial{
     public Polynomial mul(Polynomial other) {
         List<Scalar> l1 = co.getEntries();
         List<Scalar> l2 = other.getCoefficients();
-        List<Scalar> coefficients = new ArrayList<>(Polynomial.getZeroPolynomial(l1.size()+l2.size()).getCoefficients());
-        for (int i = 0 ; i < l1.size(); i++){
-            for (int j = 0 ; j < l2.size(); j++){
-                coefficients.set(i+j, coefficients.get(i+j).add(l1.get(i).mul(l2.get(j))));
+        List<Scalar> coefficients = new ArrayList<>(Polynomial.getZeroPolynomial(l1.size() + l2.size()).getCoefficients());
+        for (int i = 0; i < l1.size(); i++) {
+            for (int j = 0; j < l2.size(); j++) {
+                coefficients.set(i + j, coefficients.get(i + j).add(l1.get(i).mul(l2.get(j))));
             }
         }
         return new ComplexPolynomial(coefficients);
@@ -71,7 +71,7 @@ public class ComplexPolynomial implements Polynomial{
     @Override
     public Scalar calculate(Scalar alpha) {
         Scalar ans = Scalar.getZero();
-        for (int i = 0; i < co.size; i++){
+        for (int i = 0; i < co.size; i++) {
             ans = ans.add(co.getEntries().get(i).mul(alpha.pow(i)));
         }
         return ans;
@@ -80,7 +80,7 @@ public class ComplexPolynomial implements Polynomial{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < co.size; i++){
+        for (int i = 0; i < co.size; i++) {
             Scalar alpha = co.getEntries().get(i);
             if (i == 0 && !alpha.equal(Scalar.getZero()))
                 sb.append(alpha);
@@ -94,7 +94,7 @@ public class ComplexPolynomial implements Polynomial{
                 sb.replace(sb.lastIndexOf(" + "), sb.lastIndexOf(" + ") + 3, "");
             if (alpha.isReal() && alpha.getReal().compareTo(BigRational.ZERO) < 0 && sb.toString().length() != 0)
                 sb.replace(sb.lastIndexOf(" + "), sb.lastIndexOf(" + ") + 3, " ");
-            if (i != co.size -1  && sb.toString().length() != 0)
+            if (i != co.size - 1 && sb.toString().length() != 0)
                 sb.append(" + ");
         }
         return sb.toString();
