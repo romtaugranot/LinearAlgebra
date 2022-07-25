@@ -3,9 +3,8 @@ package Matrices;
 import ComplexMath.FieldScalars.BigRational;
 import ComplexMath.FieldScalars.ComplexScalar;
 import ComplexMath.FieldScalars.Scalar;
-import VectorSpaces.ComplexVector;
-import VectorSpaces.Vector;
-import VectorSpaces.VectorSpace;
+import Matrices.VectorSets.*;
+import Matrices.VectorSets.VectorSpaces.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,15 +95,38 @@ public class ComplexMatrix implements Matrix{
         return MatrixMathUtils.canonicalRowEchelon(this);
     }
 
-    // TODO: 13/07/2022
+
     @Override
-    public VectorSpace solve(Vector b) {
+    public VectorSet solve(Vector b) {
+        if (this.getRank() == this.n) {
+            Vector v = MatrixMathUtils.solveNoFreeVar(this, b);
+            return new MyVectorSet(v);
+        }
         try {
             return MatrixMathUtils.solve(this, b);
         } catch (ContradictionLineException e){
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public VectorSpace getNullSpace() {
+        try {
+            return MatrixMathUtils.solveNullSpace(this);
+        } catch (ContradictionLineException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Vector mulByVector(Vector v) {
+        List<Scalar> entries = new ArrayList<>();
+        for (int i = 0; i < m; i++){
+            entries.add(rowVectors.get(i).dotProduct(v));
+        }
+        return new ComplexVector(entries);
     }
 
     // TODO: 13/07/2022

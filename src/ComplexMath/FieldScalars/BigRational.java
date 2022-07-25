@@ -76,7 +76,7 @@ public class BigRational implements Comparable<BigRational> {
 
     // return string representation of (this)
     public String toString() {
-        if (den.equals(BigInteger.ONE)) return num + "";
+        if (isInteger()) return num + "";
         else                            return num + "/" + den;
     }
 
@@ -157,4 +157,15 @@ public class BigRational implements Comparable<BigRational> {
         return quotient.doubleValue();
     }
 
+    public BigInteger getDenominator() {
+        return den;
+    }
+
+    public BigInteger getNumerator() {
+        return num;
+    }
+
+    public boolean isInteger() {
+        return den.equals(BigInteger.ONE);
+    }
 }

@@ -19,6 +19,8 @@ public interface Scalar {
 
     Scalar getMinus();
 
+    Scalar pow(int n);
+
     BigRational getReal();
 
     BigRational getImaginary();

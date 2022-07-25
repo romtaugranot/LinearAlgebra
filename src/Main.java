@@ -1,8 +1,11 @@
 import ComplexMath.FieldScalars.ComplexScalar;
 import ComplexMath.FieldScalars.RealScalar;
 import ComplexMath.FieldScalars.Scalar;
+import ComplexMath.Polynomials.ComplexPolynomial;
+import ComplexMath.Polynomials.Polynomial;
 import Matrices.*;
-import VectorSpaces.*;
+import Matrices.VectorSets.*;
+import Matrices.VectorSets.VectorSpaces.*;
 
 public class Main {
 
@@ -14,24 +17,37 @@ public class Main {
         //checkComplexMatrix();
         //checkRowEchelon();
         //checkSpaceVectors();
+        //checkPoly();
         checkSolve();
     }
 
     private static void checkSolve() {
-        RealVector v1 = new RealVector("1","1","3","1");
-        RealVector v2 = new RealVector("1","1","-1","10");
-        RealVector v3 = new RealVector("1","1","1","2");
-        RealVector v4 = new RealVector("2","2","8","1");
-        Matrix mat1 = new ComplexMatrix(v1,v2,v3,v4);
+        ComplexVector v1 = new ComplexVector(new RealScalar("1"),new ComplexScalar("3", "1"),new RealScalar("3"),new RealScalar("2"));
+        ComplexVector v2 = new ComplexVector(new RealScalar("2"),new RealScalar("6"),new ComplexScalar("0", "9"),new RealScalar("7"));
+        ComplexVector v3 = new ComplexVector(new RealScalar("-1"),new ComplexScalar("-3", "8"),new RealScalar("3"),new RealScalar("4"));
 
-        mat1.solve(new RealVector("5","3","-3","18"));
+        Matrix mat1 = new ComplexMatrix(v1,v2,v3);
+
+        System.out.println(mat1.solve(new RealVector("1","5","5")));
+    }
+
+    private static void checkPoly() {
+        Polynomial p1 = new ComplexPolynomial(new RealScalar("1"), new RealScalar("-2"), new RealScalar("0"), new RealScalar("4"));
+        Polynomial p2 = new ComplexPolynomial(new RealScalar("1"), new RealScalar("0"), new RealScalar("0"), new RealScalar("0"), new RealScalar("0"), new RealScalar("0"), new RealScalar("1"));
+
+        System.out.println(p1);
+        System.out.println(p2);
+        System.out.println(p1.add(p2));
+        System.out.println(p1.mul(p2));
+        System.out.println(p1.mulByScalar(new ComplexScalar("1", "2")));
+        System.out.println(p1.mulByScalar(new ComplexScalar("1", "2")).calculate(new ComplexScalar("1","2")));
     }
 
     private static void checkSpaceVectors() {
         VectorSpace vs = new MyVectorSpace();
         vs.add(new RealVector("1","2","3","4","5"));
         vs.add(new RealVector("2","4","6","8","10"));
-        System.out.println(vs.size());
+        System.out.println(vs.getDim());
         System.out.println(vs.contains(new RealVector("3","3","9","0","15")));
     }
 

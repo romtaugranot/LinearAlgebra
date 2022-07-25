@@ -43,6 +43,20 @@ public class ComplexScalar implements Scalar {
         return new ComplexScalar(real.negate(), imaginary.negate());
     }
 
+    /**
+     * @pre: n >= 0, n is an integer.
+     * @param n
+     * @return the n-th power of the scalar.
+     */
+    @Override
+    public Scalar pow(int n) {
+        Scalar ans = new RealScalar("1");
+        for (int i = 0; i < n; i++){
+            ans = ans.mul(this);
+        }
+        return ans;
+    }
+
     private BigRational getRadiusSquared() {
         return real.times(real).plus(imaginary.times(imaginary));
     }
@@ -69,8 +83,17 @@ public class ComplexScalar implements Scalar {
     public String toString() {
         if (isReal()) return real.toString();
         if (isImaginary()) return imaginary + "i";
-        if (imaginary.compareTo(BigRational.ZERO) >= 0) return real + " + " + imaginary + " i";
-        return real + " " + imaginary + " i";
+        if (imaginary.isInteger()){
+            if (imaginary.compareTo(BigRational.ZERO) >= 0){
+                return "(" + real + " + " + imaginary + "i)";
+            }
+            return "(" + real + " " + imaginary + "i)";
+        } else{
+            if (imaginary.compareTo(BigRational.ZERO) >= 0){
+                return "(" + real + " + " + imaginary.getNumerator() + "i/" + imaginary.getDenominator() + ")";
+            }
+            return "(" + real + " " + imaginary.getNumerator() + "i/" + imaginary.getDenominator() + ")";
+        }
     }
 }
 

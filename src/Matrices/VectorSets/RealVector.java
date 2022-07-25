@@ -1,4 +1,4 @@
-package VectorSpaces;
+package Matrices.VectorSets;
 
 import ComplexMath.FieldScalars.BigRational;
 import ComplexMath.FieldScalars.RealScalar;
@@ -10,21 +10,21 @@ import java.util.stream.Collectors;
 
 public class RealVector extends ComplexVector {
 
-    public RealVector(List<RealScalar> entries){
+    public RealVector(List<RealScalar> entries) {
         super(entries.stream().map(x -> (Scalar) x).collect(Collectors.toList()));
     }
 
-    public RealVector(String... entries){
+    public RealVector(String... entries) {
         this(Arrays.stream(entries).toList().stream()
                 .map(RealScalar::new).toArray(RealScalar[]::new));
     }
 
-    public RealVector(BigRational... entries){
+    public RealVector(BigRational... entries) {
         this(Arrays.stream(entries).toList().stream()
                 .map(RealScalar::new).toArray(RealScalar[]::new));
     }
 
-    public RealVector(RealScalar... entries){
+    public RealVector(RealScalar... entries) {
         super(entries);
     }
 
@@ -33,10 +33,10 @@ public class RealVector extends ComplexVector {
         StringBuilder sb = new StringBuilder();
         List<Scalar> entries = getEntries();
         sb.append("(");
-        for (int i = 0; i < size - 1; i++){
+        for (int i = 0; i < size - 1; i++) {
             sb.append(entries.get(i).getReal() + ", ");
         }
-        sb.append(entries.get(size-1).getReal() + ")");
+        sb.append(entries.get(size - 1).getReal() + ")");
         return sb.toString();
 
     }

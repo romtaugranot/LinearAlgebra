@@ -1,4 +1,4 @@
-package VectorSpaces;
+package Matrices.VectorSets;
 
 import ComplexMath.FieldScalars.BigRational;
 import ComplexMath.FieldScalars.ComplexScalar;
@@ -10,7 +10,7 @@ public interface Vector {
 
     Vector add(Vector other);
 
-    default Vector sub(Vector other){
+    default Vector sub(Vector other) {
         return this.add(other.getMinus());
     }
 
@@ -24,27 +24,27 @@ public interface Vector {
 
     int getSize();
 
-    default boolean isZero(){
+    default boolean isZero() {
         List<Scalar> entries = getEntries();
-        for (Scalar s : entries){
+        for (Scalar s : entries) {
             if (!s.isZero())
                 return false;
         }
         return true;
     }
 
-    default boolean isReal(){
+    default boolean isReal() {
         List<Scalar> entries = getEntries();
-        for (Scalar s : entries){
+        for (Scalar s : entries) {
             if (!s.getImaginary().equals(BigRational.ZERO))
                 return false;
         }
         return true;
     }
 
-    static Vector getZeroVector(int size){
+    static Vector getZeroVector(int size) {
         ComplexScalar[] zeros = new ComplexScalar[size];
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             zeros[i] = (ComplexScalar) Scalar.getZero();
         }
         return new ComplexVector(zeros);
