@@ -1,6 +1,6 @@
-package ComplexMath.Polynomials;
+package com.LinearAlgebra.ComplexMath.Polynomials;
 
-import ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
 
 import java.util.ArrayList;
 import java.util.List;

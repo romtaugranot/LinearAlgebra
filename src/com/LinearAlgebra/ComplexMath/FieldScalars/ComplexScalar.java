@@ -1,4 +1,8 @@
-package ComplexMath.FieldScalars;
+package com.LinearAlgebra.ComplexMath.FieldScalars;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ComplexScalar implements Scalar {
 
@@ -10,7 +14,7 @@ public class ComplexScalar implements Scalar {
         this.imaginary = new BigRational(imaginary.toString());
     }
 
-    public ComplexScalar(String real, String imaginary) {
+    public ComplexScalar(String real, String imaginary) throws IllegalArgumentException{
         this.real = new BigRational(real);
         this.imaginary = new BigRational(imaginary);
     }
@@ -19,7 +23,6 @@ public class ComplexScalar implements Scalar {
         this.real = scalar.getReal();
         this.imaginary = scalar.getImaginary();
     }
-
 
     @Override
     public Scalar add(Scalar other) {
@@ -88,5 +91,6 @@ public class ComplexScalar implements Scalar {
             return "(" + real + " " + imaginary.getNumerator() + "i/" + imaginary.getDenominator() + ")";
         }
     }
+
 }
 

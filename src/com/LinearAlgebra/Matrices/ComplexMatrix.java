@@ -1,12 +1,12 @@
-package Matrices;
+package com.LinearAlgebra.Matrices;
 
-import ComplexMath.FieldScalars.ComplexScalar;
-import ComplexMath.FieldScalars.Scalar;
-import Matrices.VectorSets.ComplexVector;
-import Matrices.VectorSets.MyVectorSet;
-import Matrices.VectorSets.Vector;
-import Matrices.VectorSets.VectorSet;
-import Matrices.VectorSets.VectorSpaces.VectorSpace;
+import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
+import com.LinearAlgebra.Matrices.VectorSets.MyVectorSet;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.VectorSpace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class ComplexMatrix implements Matrix {
         this.rowVectors.addAll(Arrays.asList(rowVectors));
     }
 
-    public ComplexMatrix(ComplexScalar[][] matrix) {
+    public ComplexMatrix(Scalar[][] matrix) {
         this.m = matrix.length;
         this.n = matrix[0].length;
         this.rowVectors = new ArrayList<>();
@@ -66,6 +66,17 @@ public class ComplexMatrix implements Matrix {
         for (int i = 0; i < this.m; i++) {
             for (int j = 0; j < other.getN(); j++) {
                 matrix[i][j] = (ComplexScalar) rowVectors.get(i).dotProduct(other.getColVectors().get(j));
+            }
+        }
+        return new ComplexMatrix(matrix);
+    }
+
+    @Override
+    public Matrix getMinus() {
+        Scalar[][] matrix = getMatrix();
+        for (int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++){
+                matrix[i][j] = matrix[i][j].getMinus();
             }
         }
         return new ComplexMatrix(matrix);

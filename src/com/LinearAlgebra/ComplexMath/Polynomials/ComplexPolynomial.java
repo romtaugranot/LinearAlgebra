@@ -1,9 +1,9 @@
-package ComplexMath.Polynomials;
+package com.LinearAlgebra.ComplexMath.Polynomials;
 
-import ComplexMath.FieldScalars.BigRational;
-import ComplexMath.FieldScalars.RealScalar;
-import ComplexMath.FieldScalars.Scalar;
-import Matrices.VectorSets.ComplexVector;
+import com.LinearAlgebra.ComplexMath.FieldScalars.BigRational;
+import com.LinearAlgebra.ComplexMath.FieldScalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 
 import java.util.ArrayList;
 import java.util.List;

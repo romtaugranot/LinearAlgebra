@@ -1,4 +1,4 @@
-package ComplexMath.FieldScalars;
+package com.LinearAlgebra.ComplexMath.FieldScalars;
 
 public class ScalarDivisionByZeroException extends ArithmeticException {
 

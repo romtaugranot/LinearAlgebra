@@ -1,29 +1,31 @@
-import ComplexMath.FieldScalars.ComplexScalar;
-import ComplexMath.FieldScalars.RealScalar;
-import ComplexMath.FieldScalars.Scalar;
-import ComplexMath.Polynomials.ComplexPolynomial;
-import ComplexMath.Polynomials.Polynomial;
-import Matrices.ComplexMatrix;
-import Matrices.Matrix;
-import Matrices.VectorSets.ComplexVector;
-import Matrices.VectorSets.RealVector;
-import Matrices.VectorSets.Vector;
-import Matrices.VectorSets.VectorSpaces.MyVectorSpace;
-import Matrices.VectorSets.VectorSpaces.VectorSpace;
+package com.LinearAlgebra.Matrices;
 
-public class Main {
+import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Polynomials.ComplexPolynomial;
+import com.LinearAlgebra.ComplexMath.Polynomials.Polynomial;
+import com.LinearAlgebra.Matrices.ComplexMatrix;
+import com.LinearAlgebra.Matrices.Matrix;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
+import com.LinearAlgebra.Matrices.VectorSets.RealVector;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.MyVectorSpace;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.VectorSpace;
 
-    public static void main(String[] args) {
-        //checkComplexScalar();
-        //checkRealComplex();
-        //checkComplexVector();
-        //checkRealVector();
-        //checkComplexMatrix();
-        //checkRowEchelon();
-        //checkSpaceVectors();
-        //checkPoly();
-        checkSolve();
-    }
+public class Test {
+
+//    public static void main(String[] args) {
+//        //checkComplexScalar();
+//        //checkRealComplex();
+//        //checkComplexVector();
+//        //checkRealVector();
+//        //checkComplexMatrix();
+//        //checkRowEchelon();
+//        //checkSpaceVectors();
+//        //checkPoly();
+//        checkSolve();
+//    }
 
     private static void checkSolve() {
         ComplexVector v1 = new ComplexVector(new RealScalar("1"), new ComplexScalar("3", "1"), new RealScalar("3"), new RealScalar("2"));

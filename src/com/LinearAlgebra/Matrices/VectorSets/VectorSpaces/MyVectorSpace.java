@@ -1,6 +1,6 @@
-package Matrices.VectorSets.VectorSpaces;
+package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
 
 import java.util.Collection;
 import java.util.HashSet;

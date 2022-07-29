@@ -1,14 +1,14 @@
-package Matrices;
+package com.LinearAlgebra.Matrices;
 
-import ComplexMath.FieldScalars.ComplexScalar;
-import ComplexMath.FieldScalars.RealScalar;
-import ComplexMath.FieldScalars.Scalar;
-import Matrices.VectorSets.ComplexVector;
-import Matrices.VectorSets.MyVectorSet;
-import Matrices.VectorSets.Vector;
-import Matrices.VectorSets.VectorSet;
-import Matrices.VectorSets.VectorSpaces.MyVectorSpace;
-import Matrices.VectorSets.VectorSpaces.VectorSpace;
+import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
+import com.LinearAlgebra.Matrices.VectorSets.MyVectorSet;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.MyVectorSpace;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.VectorSpace;
 
 import java.util.ArrayList;
 import java.util.List;

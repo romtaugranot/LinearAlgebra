@@ -1,9 +1,9 @@
-package Matrices.VectorSets.VectorSpaces;
+package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import ComplexMath.FieldScalars.Scalar;
-import Matrices.MatrixMathUtils;
-import Matrices.VectorSets.ComplexVector;
-import Matrices.VectorSets.Vector;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.Matrices.MatrixMathUtils;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
 
 import java.util.Collection;
 

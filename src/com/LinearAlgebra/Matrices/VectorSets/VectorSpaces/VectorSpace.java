@@ -1,7 +1,7 @@
-package Matrices.VectorSets.VectorSpaces;
+package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import Matrices.VectorSets.Vector;
-import Matrices.VectorSets.VectorSet;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
 
 import java.util.Arrays;
 import java.util.Set;

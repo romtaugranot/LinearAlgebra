@@ -1,4 +1,4 @@
-package Matrices;
+package com.LinearAlgebra.Matrices;
 
 public class ContradictionLineException extends Exception {
 

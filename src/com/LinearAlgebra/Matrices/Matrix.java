@@ -1,10 +1,10 @@
-package Matrices;
+package com.LinearAlgebra.Matrices;
 
-import ComplexMath.FieldScalars.ComplexScalar;
-import ComplexMath.FieldScalars.Scalar;
-import Matrices.VectorSets.Vector;
-import Matrices.VectorSets.VectorSet;
-import Matrices.VectorSets.VectorSpaces.VectorSpace;
+import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.VectorSpace;
 
 import java.util.List;
 
@@ -21,6 +21,12 @@ public interface Matrix {
     }
 
     Matrix add(Matrix other);
+
+    Matrix getMinus();
+
+    default Matrix sub(Matrix other){
+        return this.add(other.getMinus());
+    }
 
     Matrix mul(Matrix other);
 
