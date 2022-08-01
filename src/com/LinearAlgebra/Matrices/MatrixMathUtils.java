@@ -1,8 +1,9 @@
 package com.LinearAlgebra.Matrices;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.RealScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
+import com.LinearAlgebra.Matrices.MatrixAlgorithms.MyMemorizedRowEchelon;
 import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.MyVectorSet;
 import com.LinearAlgebra.Matrices.VectorSets.Vector;
@@ -16,77 +17,18 @@ import java.util.stream.Collectors;
 
 public class MatrixMathUtils {
 
-    /**********************Row Echelon Code*********************************/
-    public static Matrix rowEchelon(Matrix matrix) {
-        List<Vector> rowEchelon = matrix.getRowVectors();
-        for (int row = 0; row < rowEchelon.size(); row++) {
-            // get row with leading entry.
-            int[] co = getLeadingRow(rowEchelon, row);
-            if (co[0] == -1) continue;
-            rowEchelon.set(co[0], rowEchelon.get(co[0]).mul(rowEchelon.get(co[0]).getEntries().get(co[1]).getInverse()));
-            // switch that row with the first row.
-            switchRows(rowEchelon, co[0], row);
-            Scalar leading = rowEchelon.get(row).getEntries().get(co[1]);
-            for (int i = row + 1; i < rowEchelon.size(); i++) {
-                Scalar belowLeading = rowEchelon.get(i).getEntries().get(co[1]);
-                if (!belowLeading.isZero()) {
-                    Scalar div = belowLeading.div(leading);
-                    rowEchelon.set(i, rowEchelon.get(i).sub(rowEchelon.get(row).mul(div)));
-                }
-            }
-        }
-        return new ComplexMatrix(rowEchelon);
-    }
-
     public static Matrix canonicalRowEchelon(Matrix matrix) {
-        List<Vector> rowEchelon = matrix.rowEchelon().getRowVectors();
-        for (int row = 0; row < rowEchelon.size(); row++) {
-            // get row with leading entry.
-            int[] co = getLeadingRow(rowEchelon, row);
-            if (co[0] == -1) break;
-            Scalar leading = rowEchelon.get(co[0]).getEntries().get(co[1]);
-            for (int i = 0; i < co[0]; i++) {
-                Scalar aboveLeading = rowEchelon.get(i).getEntries().get(co[1]);
-                if (!aboveLeading.isZero()) {
-                    Scalar div = aboveLeading.div(leading);
-                    rowEchelon.set(i, rowEchelon.get(i).sub(rowEchelon.get(row).mul(div)));
-                }
-            }
-        }
-        return new ComplexMatrix(rowEchelon);
+        return new MyMemorizedRowEchelon(matrix).rowEchelon();
     }
 
-    private static int[] getLeadingRow(List<Vector> rowEchelon, int row) {
-        Matrix mat = new ComplexMatrix(rowEchelon);
-        List<Vector> cols = mat.getColVectors();
-        for (int j = 0; j < cols.size(); j++) {
-            Vector v = cols.get(j);
-            if (!v.isZero()) {
-                List<Scalar> entries = v.getEntries();
-                for (int i = row; i < entries.size(); i++) {
-                    if (!entries.get(i).equal(Scalar.getZero())) {
-                        return new int[]{i, j};
-                    }
-                }
-            }
-        }
-
-        // should reach here if and only if row is zero
-        return new int[]{-1, -1};
-    }
-
-    private static void switchRows(List<Vector> rowEchelon, int row1, int row2) {
-        Vector v1 = rowEchelon.get(row1);
-        Vector v2 = rowEchelon.get(row2);
-        rowEchelon.set(row1, v2);
-        rowEchelon.set(row2, v1);
-    }
-
-    /**********************End Of Row Echelon Code*********************************/
-
-    /**********************Linear Equations Solver*********************************/
-
+    /****************************Start Of Equation Solver************************************/
     public static VectorSet solve(Matrix matrix, Vector b) throws ContradictionLineException {
+        if (b.equal(Vector.getZeroVector(b.getSize()))){
+            if (matrix.equals(Matrix.getZeroMatrix(matrix.getM(), matrix.getN())))
+                return VectorSpace.getFnSpan(b.getSize());
+            else return solveNullSpace(matrix);
+        }
+
         //expand matrix.
         Matrix expandedMatrix = expandMatrix(matrix, b);
         //row echelon the expanded matrix.
@@ -95,14 +37,9 @@ public class MatrixMathUtils {
         expandedMatrix = removeZeroRows(expandedMatrix);
 
         //check for contradiction rows (rows that express the equation 0 = c where c != 0).
-        if (checkForContradictionLines(matrix)) throw new ContradictionLineException();
+        if (checkForContradictionLines(expandedMatrix)) throw new ContradictionLineException();
 
         List<Integer> indicesOfFreeVar = indexOfFreeVar(matrix.canonicalRowEchelon());
-
-        System.out.println(expandedMatrix);
-        System.out.println(matrix.canonicalRowEchelon());
-        System.out.println(indicesOfFreeVar);
-        System.out.println();
 
         Vector solToFixedVar = calculateVector(indicesOfFreeVar, expandedMatrix.getColVectors());
         int j = 0;
@@ -112,7 +49,6 @@ public class MatrixMathUtils {
                 co[i] = solToFixedVar.getEntries().get(j++);
             else co[i] = Scalar.getZero();
         }
-        System.out.println(new ComplexVector(co));
 
         return new MyVectorSet(matrix.getNullSpace(), new ComplexVector(co));
     }
@@ -205,18 +141,15 @@ public class MatrixMathUtils {
         int n = matrix.getN();
 
         if (matrix.equals(Matrix.getZeroMatrix(m, n)))
-            return (VectorSpace) VectorSet.getZeroSet(m);
+            return VectorSpace.getFnSpan(n);
 
         int numOfFreeVariables = n - matrix.getRank();
-
         // if matrix is non-singular return the zero vector space.
         if (numOfFreeVariables == 0)
             return VectorSpace.getZeroSpace(n);
 
         //row echelon the expanded matrix.
         matrix = canonicalRowEchelon(matrix);
-
-        System.out.println(matrix);
 
         List<Integer> indicesOfFreeVar = indexOfFreeVar(matrix);
 

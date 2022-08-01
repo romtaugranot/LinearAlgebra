@@ -1,9 +1,9 @@
-package com.LinearAlgebra.ComplexMath.FieldScalars;
+package com.LinearAlgebra.ComplexMath.Scalars;
 
 public interface Scalar {
 
     static Scalar getZero() {
-        return new ComplexScalar(BigRational.ZERO, BigRational.ZERO);
+        return new RealScalar(BigRational.ZERO);
     }
 
     Scalar add(Scalar other);
@@ -14,12 +14,12 @@ public interface Scalar {
 
     Scalar mul(Scalar other);
 
-    default Scalar div(Scalar other) throws ScalarDivisionByZeroException {
-        if (other.equal(getZero())) throw new ScalarDivisionByZeroException();
+    default Scalar div(Scalar other) throws DivisionByZeroException {
+        if (other.equal(getZero())) throw new DivisionByZeroException();
         return this.mul(other.getInverse());
     }
 
-    Scalar getInverse() throws ScalarDivisionByZeroException;
+    Scalar getInverse() throws DivisionByZeroException;
 
     Scalar getMinus();
 

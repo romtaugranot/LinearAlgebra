@@ -14,6 +14,14 @@ public interface VectorSpace extends VectorSet {
         return s;
     }
 
+    static VectorSpace getFnSpan(int n){
+        VectorSpace s = new MyVectorSpace();
+        for (int i = 0; i < n; i++){
+            s.add(Vector.getFnBaseVector(n, i));
+        }
+        return s;
+    }
+
     boolean add(Vector v);
 
     default boolean addAll(Vector... vectors) {

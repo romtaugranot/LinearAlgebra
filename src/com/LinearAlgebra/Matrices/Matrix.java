@@ -1,7 +1,7 @@
 package com.LinearAlgebra.Matrices;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 import com.LinearAlgebra.Matrices.VectorSets.Vector;
 import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
 import com.LinearAlgebra.Matrices.VectorSets.VectorSpaces.VectorSpace;
@@ -11,10 +11,23 @@ import java.util.List;
 public interface Matrix {
 
     static Matrix getZeroMatrix(int m, int n) {
-        ComplexScalar[][] matrix = new ComplexScalar[m][n];
+        Scalar[][] matrix = new Scalar[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                matrix[i][j] = (ComplexScalar) Scalar.getZero();
+                matrix[i][j] = Scalar.getZero();
+            }
+        }
+        return new ComplexMatrix(matrix);
+    }
+
+    static Matrix getOneMatrix(int size) {
+        Scalar[][] matrix = new Scalar[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (i == j)
+                    matrix[i][j] = new RealScalar("1");
+                else
+                    matrix[i][j] = Scalar.getZero();
             }
         }
         return new ComplexMatrix(matrix);
@@ -34,11 +47,9 @@ public interface Matrix {
 
     Matrix transpose();
 
-    Matrix rowEchelon();
-
     Matrix canonicalRowEchelon();
 
-    VectorSet solve(Vector b);
+    VectorSet solve(Vector b) throws ContradictionLineException;
 
     VectorSpace getNullSpace();
 
@@ -55,8 +66,5 @@ public interface Matrix {
     int getN();
 
     int getRank();
-
-    Scalar getDeterminant();
-
 
 }

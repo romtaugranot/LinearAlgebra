@@ -1,4 +1,4 @@
-package com.LinearAlgebra.ComplexMath.FieldScalars;
+package com.LinearAlgebra.ComplexMath.Scalars;
 
 
 /******************************************************************************

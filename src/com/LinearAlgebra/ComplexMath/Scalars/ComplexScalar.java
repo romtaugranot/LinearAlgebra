@@ -1,8 +1,4 @@
-package com.LinearAlgebra.ComplexMath.FieldScalars;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package com.LinearAlgebra.ComplexMath.Scalars;
 
 public class ComplexScalar implements Scalar {
 
@@ -37,8 +33,8 @@ public class ComplexScalar implements Scalar {
     }
 
     @Override
-    public Scalar getInverse() throws ScalarDivisionByZeroException {
-        if (this.equals(Scalar.getZero())) throw new ScalarDivisionByZeroException();
+    public Scalar getInverse() throws DivisionByZeroException {
+        if (this.equals(Scalar.getZero())) throw new DivisionByZeroException();
         return new ComplexScalar(real.times(new BigRational(getRadiusSquared().toString()).reciprocal()), imaginary.times(new BigRational(getRadiusSquared().toString()).reciprocal()).negate());
     }
 
@@ -93,4 +89,3 @@ public class ComplexScalar implements Scalar {
     }
 
 }
-

@@ -1,54 +1,55 @@
 package com.LinearAlgebra;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.RealScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 import com.LinearAlgebra.Matrices.ComplexMatrix;
+import com.LinearAlgebra.Matrices.ContradictionLineException;
 import com.LinearAlgebra.Matrices.Matrix;
-import com.LinearAlgebra.Matrices.SquareMatrix;
+import com.LinearAlgebra.Matrices.SquareMatrices.NonSingularMatrix;
+import com.LinearAlgebra.Matrices.SquareMatrices.SquareMatrix;
+import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class FxController {
 
     private static final int MAX_SIZE = 6;
-
-    private static final int INITIAL_SIZE = 2;
+    private static final int INITIAL_SIZE = 3;
     private static final String MATRIX_NOT_SQUARE = "Something went wrong! matrix isn't square.";
-    private static final String INCORRECT_MATRIX_SIZE = "Matrix sizes are not legal for this operation.";
-
-    private static final String INCORRECT_MATRIX_INPUT = "Something went wrong! some matrix entry is not a scalar.";
+    private static final String INCORRECT_MATRIX_SIZE = "Matrices sizes are not legal for this operation.";
+    private static final String INCORRECT_MATRIX_INPUT = "Some matrix entry is not a scalar.";
+    private static final String INCORRECT_POW_INPUT = "Power can only be a positive integer.";
+    private static final String INCORRECT_SCALAR_INPUT = "Entered something that isn't a scalar.";
+    private static final String MATRIX_NOT_INVERTIBLE = "Matrix is not invertible.";
+    private static final String NO_SOLUTION_TO_EQUATION = "There's no solution to the equation";
 
     @FXML
     private ListView<Integer> leftMatRowListView, leftMatColListView, rightMatRowListView, rightMatColListView;
-
     @FXML
-    private GridPane leftMatrixGrid, rightMatrixGrid;
-
+    private GridPane leftMatrixGrid, rightMatrixGrid, ansMatrixGrid;
     @FXML
-    private GridPane ansMatrixGrid;
-
+    private Button traceButton, transposeButton, rankButton, mulByScalarButton,
+            powButton, determinantButton, inverseButton, canonicalRowEchelonButton, nullSpaceButton
+            ;
     @FXML
-    private Button traceButton, transposeButton, rankButton;
-
+    private Button addButton, subButton, mulButton, solveEquationButton;
     @FXML
-    private Button addButton, subButton, mulButton;
-
+    private TextField mulByScalarTextField, powTextField;
     @FXML
     private ToggleButton isLeftToggleButton;
-
     @FXML
     private Label answerLabel;
-
-    private boolean isLeft;
-
+    private boolean isLeft = true;;
     private int leftRowSize = INITIAL_SIZE, leftColSize = INITIAL_SIZE,
             rightRowSize = INITIAL_SIZE, rightColSize = INITIAL_SIZE;
-
     private Matrix leftMatrix = Matrix.getZeroMatrix(leftRowSize, leftColSize);
-
     private Matrix rightMatrix = Matrix.getZeroMatrix(rightRowSize, rightColSize);
 
     public void initialize() {
@@ -68,15 +69,19 @@ public class FxController {
         initListViewListeners(rightMatrixGrid, rightMatRowListView,false,  true);
         initListViewListeners(rightMatrixGrid, rightMatColListView,false,  false);
 
-        initSingleMatrixOpButtons(traceButton);
-        initSingleMatrixOpButtons(rankButton);
-        initSingleMatrixOpButtons(transposeButton);
+        List<Button> buttons = new ArrayList<>(Arrays.asList(
+                traceButton, transposeButton, rankButton, mulByScalarButton,
+                powButton, determinantButton, inverseButton, canonicalRowEchelonButton, nullSpaceButton
+        )) ;
+        for (Button b : buttons){
+            initSingleMatrixOpButtons(b);
+        }
 
-        initAddButton();
-        initSubButton();
-        initMulButton();
+        initOperationOnBothMatrixButton(addButton, OperationOnMatrices.ADD);
+        initOperationOnBothMatrixButton(subButton, OperationOnMatrices.SUB);
+        initOperationOnBothMatrixButton(mulButton, OperationOnMatrices.MUL);
+        initOperationOnBothMatrixButton(solveEquationButton, OperationOnMatrices.SOLVE);
 
-        isLeft = true; // Initial value is true.
         initIsLeftToggleButton();
 
     }
@@ -111,23 +116,6 @@ public class FxController {
         }
     }
 
-    private void initAddButton() {
-        addButton.setOnAction(e -> {
-            if (updateMatrices()) {
-                if (!checkIfSameSize()) {
-                    answerLabel.setText(INCORRECT_MATRIX_SIZE);
-                    initMatrix(ansMatrixGrid, 0, 0);
-                } else {
-                    Matrix add = leftMatrix.add(rightMatrix);
-                    updateAnsMatrix(add);
-                }
-            } else {
-                displayError(INCORRECT_MATRIX_INPUT);
-            }
-
-        });
-    }
-
     private void displayError(String text){
         answerLabel.setText(text);
         initMatrix(ansMatrixGrid, 0, 0);
@@ -139,37 +127,50 @@ public class FxController {
         return rightMatrix;
     }
 
-    private void initSubButton() {
-        subButton.setOnAction(e -> {
+    private enum OperationOnMatrices{
+        ADD, SUB, MUL, SOLVE;
+    }
+
+    private void initOperationOnBothMatrixButton(Button button, OperationOnMatrices op) {
+        button.setOnAction(e -> {
             if (updateMatrices()) {
-                if (!checkIfSameSize()) {
-                    answerLabel.setText(INCORRECT_MATRIX_SIZE);
-                    initMatrix(ansMatrixGrid, 0, 0);
-                } else {
-                    Matrix sub = leftMatrix.sub(rightMatrix);
-                    updateAnsMatrix(sub);
+                if (op.equals(OperationOnMatrices.ADD) || op.equals(OperationOnMatrices.SUB)) { // check for Add / sub
+                    if (!checkIfSameSize())
+                        displayError(INCORRECT_MATRIX_SIZE);
+                    else updateAnsOfBothMatrices(button);
+                } else if (op.equals(OperationOnMatrices.MUL)){
+                    if (leftMatrix.getN() != rightMatrix.getM())
+                        displayError(INCORRECT_MATRIX_SIZE);
+                    else updateAnsOfBothMatrices(button);
+                } else if (op.equals(OperationOnMatrices.SOLVE)){
+                    if (rightMatrix.getN() != 1 || leftMatrix.getN() != rightMatrix.getM())
+                        displayError(INCORRECT_MATRIX_SIZE);
+                    else updateAnsOfBothMatrices(button);
                 }
             } else {
                 displayError(INCORRECT_MATRIX_INPUT);
             }
-
         });
     }
 
-    private void initMulButton() {
-        mulButton.setOnAction(e -> {
-            if (updateMatrices()) {
-                if (leftMatrix.getN() != rightMatrix.getM()){
-                    answerLabel.setText(INCORRECT_MATRIX_SIZE);
-                    initMatrix(ansMatrixGrid,0,0);
-                } else {
-                    Matrix mul = leftMatrix.mul(rightMatrix);
-                    updateAnsMatrix(mul);
+    private void updateAnsOfBothMatrices(Button button){
+        Matrix matrix = null;
+        switch (button.getId()) {
+            case "addButton" -> matrix = leftMatrix.add(rightMatrix);
+            case "subButton" -> matrix = leftMatrix.sub(rightMatrix);
+            case "mulButton" -> matrix = leftMatrix.mul(rightMatrix);
+            case "solveEquationButton" -> {
+                try {
+                    VectorSet s = leftMatrix.solve(rightMatrix.getColVectors().get(0));
+                    answerLabel.setText(String.valueOf(s));
+                } catch (ContradictionLineException e){
+                    answerLabel.setText(NO_SOLUTION_TO_EQUATION);
                 }
-            } else {
-                displayError(INCORRECT_MATRIX_INPUT);
+
+                return;
             }
-        });
+        }
+        updateAnsMatrix(matrix);
     }
 
     private void initSingleMatrixOpButtons(Button button){
@@ -181,12 +182,87 @@ public class FxController {
                     case "traceButton" -> updateTrace(matrix);
                     case "rankButton" -> updateRank(matrix);
                     case "transposeButton" -> updateTranspose(matrix);
+                    case "mulByScalarButton" -> updateMulByScalar(matrix);
+                    case "powButton" -> updatePow(matrix);
+                    case "determinantButton" -> updateDeterminant(matrix);
+                    case "inverseButton" -> updateInverse(matrix);
+                    case "canonicalRowEchelonButton" -> updateRowEchelon(matrix);
+                    case "nullSpaceButton" -> updateNullSpace(matrix);
                 }
             } else {
                 displayError(INCORRECT_MATRIX_INPUT);
             }
 
         });
+    }
+
+    private void updateNullSpace(Matrix matrix) {
+        answerLabel.setText(String.valueOf(matrix.getNullSpace()));
+    }
+
+    private void updateRowEchelon(Matrix matrix) {
+        updateAnsMatrix(matrix.canonicalRowEchelon());
+    }
+
+    private void updateInverse(Matrix matrix) {
+        if (matrix.getM() != matrix.getN()) {
+            displayError(MATRIX_NOT_SQUARE);
+        } else {
+            try {
+                if (new SquareMatrix(matrix).getDeterminant().equal(Scalar.getZero()))
+                    displayError(MATRIX_NOT_INVERTIBLE);
+                else updateAnsMatrix(new NonSingularMatrix(matrix).getInvertible());
+            } catch (Exception e) {
+                displayError(MATRIX_NOT_INVERTIBLE);
+            }
+        }
+    }
+
+    private void updateDeterminant(Matrix matrix) {
+        if (matrix.getM() != matrix.getN()) {
+            displayError(MATRIX_NOT_SQUARE);
+        } else {
+            answerLabel.setText("Determinant is " + (new SquareMatrix(matrix)).getDeterminant());
+        }
+    }
+
+    private void updatePow(Matrix matrix) {
+        if (matrix.getM() != matrix.getN()) {
+            displayError(MATRIX_NOT_SQUARE);
+        } else {
+            try {
+                String powString = powTextField.getText();
+                int pow = 0;
+                if (!(powString == null || powString.isEmpty()))
+                    pow = Integer.parseInt(powTextField.getText());
+                if (pow == 0)
+                    updateAnsMatrix(Matrix.getOneMatrix(matrix.getM()));
+                else {
+                    Matrix powerMatrix = matrix;
+                    for (int i = 0; i < pow - 1; i++) {
+                        powerMatrix = powerMatrix.mul(matrix);
+                    }
+                    updateAnsMatrix(powerMatrix);
+                }
+            } catch (NumberFormatException e){
+                displayError(INCORRECT_POW_INPUT);
+            }
+        }
+    }
+
+    private void updateMulByScalar(Matrix matrix) {
+        try {
+            String scalarString = mulByScalarTextField.getText();
+            Scalar s;
+            if (scalarString == null || scalarString.isEmpty()){
+                s = Scalar.getZero();
+            } else {
+                s = convertToScalar(scalarString);
+            }
+            updateAnsMatrix(matrix.mulByScalar(s));
+        } catch (IllegalArgumentException e){
+            displayError(INCORRECT_SCALAR_INPUT);
+        }
     }
 
     private void updateTrace(Matrix matrix) {
@@ -202,8 +278,7 @@ public class FxController {
     }
 
     private void updateTranspose(Matrix matrix) {
-        Matrix transpose = matrix.transpose();
-        updateAnsMatrix(transpose);
+        updateAnsMatrix(matrix.transpose());
     }
 
     private void initListViewListeners(GridPane gridPane ,ListView<Integer> listView, boolean isLeft, boolean isRow) {
@@ -260,7 +335,7 @@ public class FxController {
                     try {
                         updated[i][j] = new ComplexScalar(convertToScalar(t.getText()));
                     } catch (IllegalArgumentException e) {
-                        answerLabel.setText("Something went wrong! maybe input is incorrect.");
+                        answerLabel.setText(INCORRECT_MATRIX_INPUT);
                         return false;
                     }
                 }
@@ -333,7 +408,8 @@ public class FxController {
     }
 
     private static Scalar convertToScalar(String exp) throws IllegalArgumentException{
-        if (exp == null || exp.isEmpty()) return Scalar.getZero();
+        if (exp == null || (exp = exp.replaceAll("\\s","")).isEmpty()) return Scalar.getZero();
+        if (!exp.contains("i")) return new RealScalar(exp);
         boolean firstPositive = true;
         boolean secondPositive = true;
         if (exp.charAt(0) == '-')     // See if first expr is negative

@@ -1,6 +1,6 @@
 package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 import com.LinearAlgebra.Matrices.MatrixMathUtils;
 import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.Vector;

@@ -1,8 +1,9 @@
 package com.LinearAlgebra.Matrices.VectorSets;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.BigRational;
-import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.BigRational;
+import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 
 import java.util.List;
 
@@ -14,6 +15,16 @@ public interface Vector {
             zeros[i] = (ComplexScalar) Scalar.getZero();
         }
         return new ComplexVector(zeros);
+    }
+
+    static Vector getFnBaseVector(int n, int index) {
+        ComplexScalar[] co = new ComplexScalar[n];
+        for (int i = 0; i < n; i++) {
+            if (i != index)
+                co[i] = (ComplexScalar) Scalar.getZero();
+            else co[i] = new RealScalar(BigRational.ONE);
+        }
+        return new ComplexVector(co);
     }
 
     Vector add(Vector other);
@@ -50,4 +61,13 @@ public interface Vector {
         return true;
     }
 
+    default boolean equal(Vector vector){
+        List<Scalar> entries = vector.getEntries();
+        if (entries.size() != getSize()) return false;
+        for (int i = 0; i < getSize(); i++) {
+            if (!entries.get(i).equal(getEntries().get(i)))
+                return false;
+        }
+        return true;
+    };
 }

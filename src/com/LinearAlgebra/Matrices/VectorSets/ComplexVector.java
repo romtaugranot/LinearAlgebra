@@ -1,8 +1,8 @@
 package com.LinearAlgebra.Matrices.VectorSets;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.BigRational;
-import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.BigRational;
+import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 
 import java.util.ArrayList;
 import java.util.Arrays;

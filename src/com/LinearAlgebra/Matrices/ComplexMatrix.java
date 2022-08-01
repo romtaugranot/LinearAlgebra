@@ -1,7 +1,7 @@
 package com.LinearAlgebra.Matrices;
 
-import com.LinearAlgebra.ComplexMath.FieldScalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.FieldScalars.Scalar;
+import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
+import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.MyVectorSet;
 import com.LinearAlgebra.Matrices.VectorSets.Vector;
@@ -16,7 +16,7 @@ public class ComplexMatrix implements Matrix {
 
     public final int m, n;
 
-    private final ArrayList<ComplexVector> rowVectors;
+    private final List<ComplexVector> rowVectors;
 
     public ComplexMatrix(final List<Vector> rowVectors) {
         this.m = rowVectors.size();
@@ -99,28 +99,18 @@ public class ComplexMatrix implements Matrix {
     }
 
     @Override
-    public Matrix rowEchelon() {
-        return MatrixMathUtils.rowEchelon(this);
-    }
-
-    @Override
     public Matrix canonicalRowEchelon() {
         return MatrixMathUtils.canonicalRowEchelon(this);
     }
 
 
     @Override
-    public VectorSet solve(Vector b) {
+    public VectorSet solve(Vector b) throws ContradictionLineException{
         if (this.getRank() == this.n) {
             Vector v = MatrixMathUtils.solveNoFreeVar(this, b);
             return new MyVectorSet(v);
         }
-        try {
-            return MatrixMathUtils.solve(this, b);
-        } catch (ContradictionLineException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return MatrixMathUtils.solve(this, b);
     }
 
     @Override
@@ -142,15 +132,9 @@ public class ComplexMatrix implements Matrix {
         return new ComplexVector(entries);
     }
 
-    // TODO: 13/07/2022
-    @Override
-    public Scalar getDeterminant() {
-        return null;
-    }
-
     @Override
     public int getRank() {
-        Matrix canonical = rowEchelon().transpose().canonicalRowEchelon();
+        Matrix canonical = canonicalRowEchelon().transpose().canonicalRowEchelon();
         ComplexScalar[][] matrix = (ComplexScalar[][]) canonical.getMatrix();
         int count = 0;
         for (int i = 0; i < matrix.length && i < matrix[0].length; i++) {
@@ -197,7 +181,21 @@ public class ComplexMatrix implements Matrix {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < m; i++)
             sb.append(Arrays.toString(getMatrix()[i])).append("\n");
+
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof ComplexMatrix matrix)) return false;
+        for (int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++){
+                if (!getMatrix()[i][j].equals(matrix.getMatrix()[i][j]))
+                    return false;
+            }
+        }
+        return true;
     }
 
     @Override
