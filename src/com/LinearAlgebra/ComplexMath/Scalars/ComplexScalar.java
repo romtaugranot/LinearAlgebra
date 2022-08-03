@@ -1,9 +1,19 @@
 package com.LinearAlgebra.ComplexMath.Scalars;
 
+import com.LinearAlgebra.ComplexMath.Polynomials.Polynomial;
+
 public class ComplexScalar implements Scalar {
 
     private final BigRational real;
     private final BigRational imaginary;
+
+    public static ComplexScalar getZero() {
+        return new RealScalar(BigRational.ZERO);
+    }
+
+    public static ComplexScalar getOne() {
+        return new RealScalar(BigRational.ONE);
+    }
 
     public ComplexScalar(BigRational real, BigRational imaginary) {
         this.real = new BigRational(real.toString());
@@ -50,12 +60,14 @@ public class ComplexScalar implements Scalar {
      */
     @Override
     public Scalar pow(int n) {
-        Scalar ans = new RealScalar("1");
+        Scalar ans = new RealScalar(BigRational.ONE);
         for (int i = 0; i < n; i++) {
             ans = ans.mul(this);
         }
         return ans;
     }
+
+
 
     private BigRational getRadiusSquared() {
         return real.times(real).plus(imaginary.times(imaginary));
@@ -88,4 +100,14 @@ public class ComplexScalar implements Scalar {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof ComplexScalar) && !(obj instanceof Polynomial)) return false;
+        if (obj instanceof ComplexScalar s)
+            return s.real.equals(real) && s.imaginary.equals(imaginary);
+        Polynomial p = (Polynomial) obj;
+        if (p.getDegree() > 0) return false;
+        return p.getEntries().get(0).equals(this);
+    }
 }

@@ -1,6 +1,6 @@
 package com.LinearAlgebra.ComplexMath.Scalars;
 
-public interface Scalar {
+public interface Scalar{
 
     static Scalar getZero() {
         return new RealScalar(BigRational.ZERO);

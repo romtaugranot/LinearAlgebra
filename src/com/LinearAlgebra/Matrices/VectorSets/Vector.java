@@ -55,7 +55,7 @@ public interface Vector {
     default boolean isReal() {
         List<Scalar> entries = getEntries();
         for (Scalar s : entries) {
-            if (!s.getImaginary().equals(BigRational.ZERO))
+            if (!(s instanceof ComplexScalar alpha) || !alpha.isReal())
                 return false;
         }
         return true;
