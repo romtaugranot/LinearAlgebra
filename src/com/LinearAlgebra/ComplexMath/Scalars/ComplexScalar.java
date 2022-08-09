@@ -1,11 +1,28 @@
 package com.LinearAlgebra.ComplexMath.Scalars;
 
-import com.LinearAlgebra.ComplexMath.Polynomials.Polynomial;
-
 public class ComplexScalar implements Scalar {
 
     private final BigRational real;
     private final BigRational imaginary;
+
+    public ComplexScalar(BigRational real, BigRational imaginary) {
+        this.real = new BigRational(real.toString());
+        this.imaginary = new BigRational(imaginary.toString());
+    }
+
+    public ComplexScalar(RealScalar real, RealScalar imaginary){
+        this(real.getRationalReal(), imaginary.getRationalReal());
+    }
+
+    public ComplexScalar(String real, String imaginary) throws IllegalArgumentException {
+        this.real = new BigRational(real);
+        this.imaginary = new BigRational(imaginary);
+    }
+
+    public ComplexScalar(Scalar scalar) {
+        this.real = scalar.getReal().getRationalReal();
+        this.imaginary = scalar.getImaginary().getRationalReal();
+    }
 
     public static ComplexScalar getZero() {
         return new RealScalar(BigRational.ZERO);
@@ -15,37 +32,22 @@ public class ComplexScalar implements Scalar {
         return new RealScalar(BigRational.ONE);
     }
 
-    public ComplexScalar(BigRational real, BigRational imaginary) {
-        this.real = new BigRational(real.toString());
-        this.imaginary = new BigRational(imaginary.toString());
-    }
-
-    public ComplexScalar(String real, String imaginary) throws IllegalArgumentException{
-        this.real = new BigRational(real);
-        this.imaginary = new BigRational(imaginary);
-    }
-
-    public ComplexScalar(Scalar scalar) {
-        this.real = scalar.getReal();
-        this.imaginary = scalar.getImaginary();
-    }
-
     @Override
     public Scalar add(Scalar other) {
-        return new ComplexScalar(this.real.plus(other.getReal()).toString(), this.imaginary.plus(other.getImaginary()).toString());
+        return new ComplexScalar(this.real.plus(other.getReal().getRationalReal()).toString(), this.imaginary.plus(other.getImaginary().getRationalReal()).toString());
     }
 
     @Override
     public Scalar mul(Scalar other) {
-        BigRational real = this.real.times(other.getReal()).minus(this.imaginary.times(other.getImaginary()));
-        BigRational imaginary = this.real.times(other.getImaginary()).plus(this.imaginary.times(other.getReal()));
+        BigRational real = this.real.times(other.getReal().getRationalReal()).minus(this.imaginary.times(other.getImaginary().getRationalReal()));
+        BigRational imaginary = this.real.times(other.getImaginary().getRationalReal()).plus(this.imaginary.times(other.getReal().getRationalReal()));
         return new ComplexScalar(real.toString(), imaginary.toString());
     }
 
     @Override
     public Scalar getInverse() throws DivisionByZeroException {
         if (this.equals(Scalar.getZero())) throw new DivisionByZeroException();
-        return new ComplexScalar(real.times(new BigRational(getRadiusSquared().toString()).reciprocal()), imaginary.times(new BigRational(getRadiusSquared().toString()).reciprocal()).negate());
+        return new ComplexScalar(real.times(new BigRational(getAbsoluteValueSquared().toString()).reciprocal()), imaginary.times(new BigRational(getAbsoluteValueSquared().toString()).reciprocal()).negate());
     }
 
     @Override
@@ -68,19 +70,26 @@ public class ComplexScalar implements Scalar {
     }
 
 
-
-    private BigRational getRadiusSquared() {
+    public BigRational getAbsoluteValueSquared() {
         return real.times(real).plus(imaginary.times(imaginary));
     }
 
-    @Override
-    public BigRational getReal() {
+    public BigRational getRationalReal() {
         return real;
     }
 
-    @Override
-    public BigRational getImaginary() {
+    public BigRational getRationalImaginary() {
         return imaginary;
+    }
+
+    @Override
+    public RealScalar getReal() {
+        return new RealScalar(real);
+    }
+
+    @Override
+    public RealScalar getImaginary() {
+        return new RealScalar(imaginary);
     }
 
     @Override
@@ -103,11 +112,7 @@ public class ComplexScalar implements Scalar {
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
-        if (!(obj instanceof ComplexScalar) && !(obj instanceof Polynomial)) return false;
-        if (obj instanceof ComplexScalar s)
-            return s.real.equals(real) && s.imaginary.equals(imaginary);
-        Polynomial p = (Polynomial) obj;
-        if (p.getDegree() > 0) return false;
-        return p.getEntries().get(0).equals(this);
+        if (!(obj instanceof ComplexScalar s)) return false;
+        return s.real.equals(real) && s.imaginary.equals(imaginary);
     }
 }

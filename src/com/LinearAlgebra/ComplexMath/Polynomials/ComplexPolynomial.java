@@ -6,18 +6,17 @@ import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
 import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class ComplexPolynomial implements Polynomial{
+public class ComplexPolynomial implements Polynomial {
 
-    private List<ComplexScalar> entries;
+    private final List<ComplexScalar> entries;
 
-    public ComplexPolynomial(ComplexScalar... entries){
+    public ComplexPolynomial(ComplexScalar... entries) {
         this.entries = new ArrayList<>(List.of(entries));
     }
 
-    public ComplexPolynomial(List<ComplexScalar> entries){
+    public ComplexPolynomial(List<ComplexScalar> entries) {
         this.entries = new ArrayList<>(entries);
     }
 
@@ -27,7 +26,7 @@ public class ComplexPolynomial implements Polynomial{
             return other.add(this);
         // now getDegree() <= other.getDegree()
         List<ComplexScalar> newEntries = new ArrayList<>();
-        for (int i = 0; i <= other.getDegree(); i++){
+        for (int i = 0; i <= other.getDegree(); i++) {
             if (i <= getDegree())
                 newEntries.add((ComplexScalar) entries.get(i).add(other.getEntries().get(i)));
             else
@@ -39,12 +38,12 @@ public class ComplexPolynomial implements Polynomial{
     @Override
     public Polynomial mul(Polynomial other) {
         List<ComplexScalar> newEntries = new ArrayList<>();
-        for (int i = 0; i <= getDegree() + other.getDegree(); i++){
+        for (int i = 0; i <= getDegree() + other.getDegree(); i++) {
             newEntries.add(new RealScalar(BigRational.ZERO));
         }
-        for (int i = 0; i <= getDegree(); i++){
-            for (int j = 0; j <= other.getDegree(); j++){
-                newEntries.set(i+j, (ComplexScalar) newEntries.get(i+j).add(entries.get(i).mul(other.getEntries().get(j))));
+        for (int i = 0; i <= getDegree(); i++) {
+            for (int j = 0; j <= other.getDegree(); j++) {
+                newEntries.set(i + j, (ComplexScalar) newEntries.get(i + j).add(entries.get(i).mul(other.getEntries().get(j))));
             }
         }
         return new ComplexPolynomial(newEntries);
@@ -56,9 +55,9 @@ public class ComplexPolynomial implements Polynomial{
     }
 
     @Override
-    public ComplexScalar calculate(ComplexScalar x) {
+    public ComplexScalar calculate(Scalar x) {
         ComplexScalar s = ComplexScalar.getZero();
-        for (int i = 0; i < entries.size(); i++){
+        for (int i = 0; i < entries.size(); i++) {
             s = (ComplexScalar) s.add(entries.get(i).mul(x.pow(i)));
         }
         return s;
@@ -72,7 +71,7 @@ public class ComplexPolynomial implements Polynomial{
     @Override
     public Polynomial pow(int n) {
         Polynomial p = Polynomial.getOne();
-        for (int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             p = p.mul(this);
         }
         return p;
@@ -80,7 +79,7 @@ public class ComplexPolynomial implements Polynomial{
 
     @Override
     public int getDegree() {
-        for (int i = entries.size() - 1 ; i >= 0; i--)
+        for (int i = entries.size() - 1; i >= 0; i--)
             if (!entries.get(i).equals(ComplexScalar.getZero()))
                 return i;
         return 0;
@@ -95,6 +94,16 @@ public class ComplexPolynomial implements Polynomial{
     }
 
     @Override
+    public Polynomial differentiate() {
+        if (getDegree() <= 1) return Polynomial.getZero();
+        List<ComplexScalar> co = new ArrayList<>();
+        for (int i = 1; i <= getDegree(); i++){
+            co.add((ComplexScalar) new RealScalar(i +  "").mul(entries.get(i)));
+        }
+        return new ComplexPolynomial(co);
+    }
+
+    @Override
     public List<ComplexScalar> getEntries() {
         return new ArrayList<>(entries);
     }
@@ -104,15 +113,15 @@ public class ComplexPolynomial implements Polynomial{
         if (entries.isEmpty()) return "0";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < entries.size(); i++) {
-            if (!entries.get(i).equals(ComplexScalar.getZero())) {
+            if (entries.get(i).equals(ComplexScalar.getOne())) {
+                if (i == 1) sb.append("x");
+                else sb.append("x^").append(i);
+            } else if (!entries.get(i).equals(ComplexScalar.getZero())) {
                 if (i == 0) sb.append(entries.get(i));
                 else if (i == 1) sb.append(entries.get(i)).append("x");
                 else sb.append(entries.get(i)).append("x^").append(i);
-            } else if (entries.get(i).equals(ComplexScalar.getOne())) {
-                if (i == 1) sb.append("x");
-                else sb.append("x^").append(i);
             }
-            if (i != entries.size() - 1 &&!(entries.get(i + 1).isReal() && entries.get(i + 1).getReal().compareTo(BigRational.ZERO) <= 0))
+            if (!sb.isEmpty() && i != entries.size() - 1 && !(entries.get(i + 1).isReal() && entries.get(i + 1).getRationalReal().compareTo(BigRational.ZERO) < 0))
                 sb.append("+");
         }
         if (sb.isEmpty()) return "0";

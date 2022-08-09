@@ -23,7 +23,7 @@ public class MatrixMathUtils {
 
     /****************************Start Of Equation Solver************************************/
     public static VectorSet solve(Matrix matrix, Vector b) throws ContradictionLineException {
-        if (b.equal(Vector.getZeroVector(b.getSize()))){
+        if (b.equal(Vector.getZeroVector(b.getSize()))) {
             if (matrix.equals(Matrix.getZeroMatrix(matrix.getM(), matrix.getN())))
                 return VectorSpace.getFnSpan(b.getSize());
             else return solveNullSpace(matrix);
@@ -82,15 +82,15 @@ public class MatrixMathUtils {
         do {
             Scalar one = entries1.get(i);
             Scalar second = entries2.get(i);
-            if (one.equal(Scalar.getZero())) {
-                if (!second.equal(Scalar.getZero())) return false;
+            if (one.isZero()) {
+                if (!second.isZero()) return false;
             } else {
-                if (second.equal(Scalar.getZero())) return false;
+                if (second.isZero()) return false;
                 else {
                     if (i == 0) {
                         s = one.div(second);
                     } else {
-                        if (!one.div(second).equal(s)) return false;
+                        if (!one.div(second).equals(s)) return false;
                     }
                 }
             }
@@ -103,10 +103,10 @@ public class MatrixMathUtils {
         List<Vector> rows = matrix.getRowVectors();
         for (Vector v : rows) {
             List<Scalar> entries = v.getEntries();
-            if (!entries.get(entries.size() - 1).equal(Scalar.getZero())) {
+            if (!entries.get(entries.size() - 1).equals(Scalar.getZero())) {
                 boolean flag = false;
                 for (int i = 0; i < entries.size() - 1; i++) {
-                    if (!entries.get(i).equal(Scalar.getZero())) {
+                    if (!entries.get(i).isZero()) {
                         flag = true;
                     }
                 }

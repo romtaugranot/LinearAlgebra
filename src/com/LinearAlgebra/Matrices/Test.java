@@ -1,11 +1,10 @@
 package com.LinearAlgebra.Matrices;
 
+import com.LinearAlgebra.ComplexMath.Polynomials.ComplexPolynomial;
+import com.LinearAlgebra.ComplexMath.Polynomials.Polynomial;
 import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
 import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
 import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
-import com.LinearAlgebra.ComplexMath.Polynomials.ComplexPolynomial;
-import com.LinearAlgebra.ComplexMath.Polynomials.Polynomial;
-import com.LinearAlgebra.Matrices.SquareMatrices.ElementryMatrix;
 import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.RealVector;
 import com.LinearAlgebra.Matrices.VectorSets.Vector;
@@ -57,11 +56,11 @@ public class Test {
         System.out.println(p1.getDegree());
         System.out.println(p1.calculate(new RealScalar("4")));
         System.out.println(Arrays.toString(Polynomial.euclideanAlgorithm(
-                new ComplexPolynomial(new RealScalar("-6"), new RealScalar("5"),ComplexScalar.getOne(), ComplexScalar.getOne()),
-                new ComplexPolynomial(ComplexScalar.getOne(),ComplexScalar.getZero(), ComplexScalar.getOne()))));
+                new ComplexPolynomial(new RealScalar("-6"), new RealScalar("5"), ComplexScalar.getOne(), ComplexScalar.getOne()),
+                new ComplexPolynomial(ComplexScalar.getOne(), ComplexScalar.getZero(), ComplexScalar.getOne()))));
         System.out.println(p1.divides(p1.mulByScalar(new RealScalar("2")).add(new ComplexPolynomial(ComplexScalar.getOne()))));
         System.out.println(
-                new ComplexPolynomial((ComplexScalar) ComplexScalar.getOne().getMinus(), ComplexScalar.getZero(), ComplexScalar.getZero(),ComplexScalar.getZero(),  ComplexScalar.getOne())
+                new ComplexPolynomial((ComplexScalar) ComplexScalar.getOne().getMinus(), ComplexScalar.getZero(), ComplexScalar.getZero(), ComplexScalar.getZero(), ComplexScalar.getOne())
                         .gcd(new ComplexPolynomial(new RealScalar("-2"), new RealScalar("-1"), new RealScalar("2"), ComplexScalar.getOne())));
     }
 
@@ -129,7 +128,6 @@ public class Test {
     private static void checkRealComplex() {
         Scalar a = new RealScalar("1");
         Scalar b = new ComplexScalar("1", "1");
-        System.out.println(a.equal(Scalar.getZero()));
         System.out.println(a.add(b));
         System.out.println(a.mul(b));
         System.out.println(a.sub(b));
@@ -140,7 +138,6 @@ public class Test {
     private static void checkComplexScalar() {
         Scalar a = new ComplexScalar("142", "1/4");
         Scalar b = new ComplexScalar("1", "1");
-        System.out.println(a.equal(Scalar.getZero()));
         System.out.println(a.add(b));
         System.out.println(a.mul(b));
         System.out.println(a.sub(b));

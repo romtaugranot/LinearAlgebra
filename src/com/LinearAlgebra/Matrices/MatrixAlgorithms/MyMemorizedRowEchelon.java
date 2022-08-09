@@ -4,21 +4,45 @@ import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
 import com.LinearAlgebra.Matrices.ComplexMatrix;
 import com.LinearAlgebra.Matrices.Matrix;
 import com.LinearAlgebra.Matrices.SquareMatrices.ElementryMatrix;
-import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.Vector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MyMemorizedRowEchelon implements MemorizedRowEchelon {
 
-    private Matrix matrix;
-    private List<ElementryMatrix> operations;
+    private final Matrix matrix;
+    private final List<ElementryMatrix> operations;
 
-    public MyMemorizedRowEchelon(Matrix matrix){
+    public MyMemorizedRowEchelon(Matrix matrix) {
         this.matrix = matrix;
         operations = new ArrayList<>();
+    }
+
+    private static int[] getLeadingRow(List<Vector> rowEchelon, int row) {
+        Matrix mat = new ComplexMatrix(rowEchelon);
+        List<Vector> cols = mat.getColVectors();
+        for (int j = 0; j < cols.size(); j++) {
+            Vector v = cols.get(j);
+            if (!v.isZero()) {
+                List<Scalar> entries = v.getEntries();
+                for (int i = row; i < entries.size(); i++) {
+                    if (!entries.get(i).equals(Scalar.getZero())) {
+                        return new int[]{i, j};
+                    }
+                }
+            }
+        }
+
+        // should reach here if and only if row is zero
+        return new int[]{-1, -1};
+    }
+
+    private static void switchRows(List<Vector> rowEchelon, int row1, int row2) {
+        Vector v1 = rowEchelon.get(row1);
+        Vector v2 = rowEchelon.get(row2);
+        rowEchelon.set(row1, v2);
+        rowEchelon.set(row2, v1);
     }
 
     public Matrix rowEchelon() {
@@ -43,32 +67,6 @@ public class MyMemorizedRowEchelon implements MemorizedRowEchelon {
             }
         }
         return new ComplexMatrix(rowEchelon);
-    }
-
-    private static int[] getLeadingRow(List<Vector> rowEchelon, int row) {
-        Matrix mat = new ComplexMatrix(rowEchelon);
-        List<Vector> cols = mat.getColVectors();
-        for (int j = 0; j < cols.size(); j++) {
-            Vector v = cols.get(j);
-            if (!v.isZero()) {
-                List<Scalar> entries = v.getEntries();
-                for (int i = row; i < entries.size(); i++) {
-                    if (!entries.get(i).equal(Scalar.getZero())) {
-                        return new int[]{i, j};
-                    }
-                }
-            }
-        }
-
-        // should reach here if and only if row is zero
-        return new int[]{-1, -1};
-    }
-
-    private static void switchRows(List<Vector> rowEchelon, int row1, int row2) {
-        Vector v1 = rowEchelon.get(row1);
-        Vector v2 = rowEchelon.get(row2);
-        rowEchelon.set(row1, v2);
-        rowEchelon.set(row2, v1);
     }
 
     @Override

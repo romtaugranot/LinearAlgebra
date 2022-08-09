@@ -37,7 +37,7 @@ public interface Matrix {
 
     Matrix getMinus();
 
-    default Matrix sub(Matrix other){
+    default Matrix sub(Matrix other) {
         return this.add(other.getMinus());
     }
 

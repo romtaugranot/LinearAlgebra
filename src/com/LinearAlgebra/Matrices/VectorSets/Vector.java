@@ -61,13 +61,14 @@ public interface Vector {
         return true;
     }
 
-    default boolean equal(Vector vector){
+    default boolean equal(Vector vector) {
         List<Scalar> entries = vector.getEntries();
         if (entries.size() != getSize()) return false;
         for (int i = 0; i < getSize(); i++) {
-            if (!entries.get(i).equal(getEntries().get(i)))
+            if (!entries.get(i).equals(getEntries().get(i)))
                 return false;
         }
         return true;
-    };
+    }
+
 }

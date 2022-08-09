@@ -11,8 +11,8 @@ public class NonSingularMatrix extends SquareMatrix {
     MemorizedRowEchelon rowEcheloner;
 
     /**
-     * @pre: Matrix is non-singular.
      * @param matrix
+     * @pre: Matrix is non-singular.
      */
     public NonSingularMatrix(Matrix matrix) {
         super(matrix);
@@ -22,7 +22,7 @@ public class NonSingularMatrix extends SquareMatrix {
     public Matrix getInvertible() {
         Matrix inverse = Matrix.getOneMatrix(m);
         rowEcheloner.rowEchelon();
-        for (int i = rowEcheloner.getOperationsOfRowEchelon().size() - 1; i >= 0; i--){
+        for (int i = rowEcheloner.getOperationsOfRowEchelon().size() - 1; i >= 0; i--) {
             inverse = inverse.mul(rowEcheloner.getOperationsOfRowEchelon().get(i));
         }
         return inverse;
@@ -32,7 +32,7 @@ public class NonSingularMatrix extends SquareMatrix {
     public Scalar getDeterminant() {
         Scalar det = new RealScalar("1");
         rowEcheloner.rowEchelon();
-        for (ElementryMatrix elementry : rowEcheloner.getOperationsOfRowEchelon()){
+        for (ElementryMatrix elementry : rowEcheloner.getOperationsOfRowEchelon()) {
             det = det.mul(elementry.getDeterminant());
         }
         return det;

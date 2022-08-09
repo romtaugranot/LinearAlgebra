@@ -1,10 +1,12 @@
 package com.LinearAlgebra.ComplexMath.Scalars;
 
-public interface Scalar{
+public interface Scalar {
 
     static Scalar getZero() {
         return new RealScalar(BigRational.ZERO);
     }
+
+    static Scalar getOne() {return new RealScalar(BigRational.ONE);}
 
     Scalar add(Scalar other);
 
@@ -15,7 +17,7 @@ public interface Scalar{
     Scalar mul(Scalar other);
 
     default Scalar div(Scalar other) throws DivisionByZeroException {
-        if (other.equal(getZero())) throw new DivisionByZeroException();
+        if (isZero()) throw new DivisionByZeroException();
         return this.mul(other.getInverse());
     }
 
@@ -25,26 +27,21 @@ public interface Scalar{
 
     Scalar pow(int n);
 
-    BigRational getReal();
+    RealScalar getReal();
 
-    BigRational getImaginary();
-
-    default boolean equal(Scalar other) {
-        return this.getReal().equals(other.getReal())
-                && this.getImaginary().equals(other.getImaginary());
-    }
+    RealScalar getImaginary();
 
     default boolean isZero() {
-        return this.equal(getZero());
+        return this.equals(getZero());
     }
 
 
     default boolean isReal() {
-        return getImaginary().equals(BigRational.ZERO);
+        return getImaginary().equals(ComplexScalar.getZero());
     }
 
     default boolean isImaginary() {
-        return getReal().equals(BigRational.ZERO);
+        return getReal().equals(ComplexScalar.getZero());
     }
 
 }

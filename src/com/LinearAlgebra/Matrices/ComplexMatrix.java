@@ -45,7 +45,7 @@ public class ComplexMatrix implements Matrix {
     }
 
     public ComplexMatrix(ComplexMatrix complexMatrix) {
-        this((ComplexScalar[][]) complexMatrix.getMatrix());
+        this(complexMatrix.getMatrix());
     }
 
     @Override
@@ -74,8 +74,8 @@ public class ComplexMatrix implements Matrix {
     @Override
     public Matrix getMinus() {
         Scalar[][] matrix = getMatrix();
-        for (int i = 0; i < m; i++){
-            for (int j = 0; j < n; j++){
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 matrix[i][j] = matrix[i][j].getMinus();
             }
         }
@@ -105,7 +105,7 @@ public class ComplexMatrix implements Matrix {
 
 
     @Override
-    public VectorSet solve(Vector b) throws ContradictionLineException{
+    public VectorSet solve(Vector b) throws ContradictionLineException {
         if (this.getRank() == this.n) {
             Vector v = MatrixMathUtils.solveNoFreeVar(this, b);
             return new MyVectorSet(v);
@@ -189,8 +189,8 @@ public class ComplexMatrix implements Matrix {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (!(obj instanceof ComplexMatrix matrix)) return false;
-        for (int i = 0; i < m; i++){
-            for (int j = 0; j < n; j++){
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 if (!getMatrix()[i][j].equals(matrix.getMatrix()[i][j]))
                     return false;
             }

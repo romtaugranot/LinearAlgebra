@@ -86,7 +86,7 @@ public class ComplexVector implements Vector {
         if (isReal()) {
             BigRational[] real = new BigRational[size];
             for (int i = 0; i < size; i++) {
-                real[i] = entries.get(i).getReal();
+                real[i] = entries.get(i).getRationalReal();
             }
             return new RealVector(real).toString();
         }

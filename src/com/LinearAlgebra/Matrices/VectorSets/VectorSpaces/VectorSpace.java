@@ -14,9 +14,9 @@ public interface VectorSpace extends VectorSet {
         return s;
     }
 
-    static VectorSpace getFnSpan(int n){
+    static VectorSpace getFnSpan(int n) {
         VectorSpace s = new MyVectorSpace();
-        for (int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             s.add(Vector.getFnBaseVector(n, i));
         }
         return s;
