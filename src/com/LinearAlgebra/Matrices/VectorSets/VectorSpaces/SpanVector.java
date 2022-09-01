@@ -1,13 +1,13 @@
 package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
-import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Rings.Fields.ComplexField.ComplexScalar;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
 
 public interface SpanVector extends VectorSet {
 
-    Vector get(Scalar alpha);
+    ComplexVector get(ComplexScalar alpha);
 
-    Vector getV();
+    ComplexVector getV();
 
 }

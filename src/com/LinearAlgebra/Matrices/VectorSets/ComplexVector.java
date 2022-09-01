@@ -1,106 +1,70 @@
 package com.LinearAlgebra.Matrices.VectorSets;
 
-import com.LinearAlgebra.ComplexMath.Scalars.BigRational;
-import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
+import com.LinearAlgebra.Matrices.MyComplexMatrix;
+import com.LinearAlgebra.Rings.Fields.ComplexField.ComplexScalar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-public class ComplexVector implements Vector {
+public interface ComplexVector{
 
-    public final int size;
+    ComplexVector add(ComplexVector other);
 
-    private final ArrayList<ComplexScalar> entries;
-
-    public ComplexVector(List<Scalar> entries) {
-        this.entries = new ArrayList<>();
-        this.size = entries.size();
-        for (Scalar scalar : entries) {
-            ComplexScalar alpha = new ComplexScalar(scalar.getReal(), scalar.getImaginary());
-            this.entries.add(alpha);
-        }
+    default ComplexVector sub(ComplexVector other) {
+        return this.add(other.minus());
     }
 
-    public ComplexVector(Scalar... entries) {
-        this(Arrays.asList(entries));
-    }
+    ComplexVector minus();
 
-    public ComplexVector(ComplexScalar... entries) {
-        this.entries = new ArrayList<>(List.of(entries));
-        this.size = entries.length;
-    }
+    ComplexScalar dotProduct(ComplexVector other);
 
+    ComplexVector mul(ComplexScalar alpha);
 
-    @Override
-    public Vector add(Vector other) {
-        ComplexScalar[] newEntries = new ComplexScalar[size];
-        for (int i = 0; i < size; i++) {
-            newEntries[i] = (ComplexScalar) entries.get(i).add(other.getEntries().get(i));
-        }
-        return new ComplexVector(newEntries);
-    }
+    List<ComplexScalar> entries();
 
-    @Override
-    public Scalar dotProduct(Vector other) {
-        Scalar alpha = Scalar.getZero();
-        for (int i = 0; i < size; i++) {
-            alpha = alpha.add(entries.get(i).mul(other.getEntries().get(i)));
-        }
-        return alpha;
-    }
+    int size();
 
-    @Override
-    public Vector mul(Scalar alpha) {
-        ComplexScalar[] newEntries = new ComplexScalar[size];
-        for (int i = 0; i < size; i++) {
-            newEntries[i] = (ComplexScalar) entries.get(i).mul(alpha);
-        }
-        return new ComplexVector(newEntries);
-    }
-
-    @Override
-    public List<Scalar> getEntries() {
-        return new ArrayList<>(entries);
-    }
-
-    public boolean isReal() {
-        for (ComplexScalar alpha : entries) {
-            if (!alpha.isReal()) return false;
+    default boolean isZero() {
+        List<ComplexScalar> entries = entries();
+        for (ComplexScalar s : entries) {
+            if (!s.equals(ComplexScalar.ZERO))
+                return false;
         }
         return true;
     }
 
-    @Override
-    public Vector getMinus() {
-        ComplexVector v = new ComplexVector(this.entries.toArray(ComplexScalar[]::new));
+    default boolean isReal() {
+        List<ComplexScalar> entries = entries();
+        for (ComplexScalar s : entries) {
+            if (!s.isReal())
+                return false;
+        }
+        return true;
+    }
+
+    static ComplexVector zeroVector(int size) {
+        ComplexScalar[] zeros = new ComplexScalar[size];
         for (int i = 0; i < size; i++) {
-            v.entries.set(i, (ComplexScalar) this.entries.get(i).getMinus());
+            zeros[i] = ComplexScalar.ZERO;
         }
-        return v;
+        return new MyComplexVector(zeros);
     }
 
-    @Override
-    public String toString() {
-        if (isReal()) {
-            BigRational[] real = new BigRational[size];
-            for (int i = 0; i < size; i++) {
-                real[i] = entries.get(i).getRationalReal();
-            }
-            return new RealVector(real).toString();
+    static ComplexVector fnBaseVector(int n, int index) {
+        ComplexScalar[] co = new ComplexScalar[n];
+        for (int i = 0; i < n; i++) {
+            if (i != index)
+                co[i] = ComplexScalar.ZERO;
+            else co[i] = ComplexScalar.ONE;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        for (int i = 0; i < size - 1; i++) {
-            sb.append(entries.get(i) + ", ");
-        }
-        sb.append(entries.get(size - 1)).append(")");
-        return sb.toString();
+        return new MyComplexVector(co);
     }
 
-    @Override
-    public int getSize() {
-        return size;
+    static boolean isLinearIndependent(Set<ComplexVector> lst, ComplexVector v){
+        List<ComplexVector> vectors = new ArrayList<>(lst);
+        vectors.add(v);
+        return new MyComplexMatrix(vectors).getRank() != new MyComplexMatrix(lst.stream().toList()).getRank();
     }
+
 }

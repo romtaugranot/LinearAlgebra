@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class MyVectorSet implements VectorSet {
 
-    private final Set<Vector> vectors;
+    private final Set<ComplexVector> vectors;
 
     private VectorSpace span = new MyVectorSpace();
 
@@ -19,24 +19,22 @@ public class MyVectorSet implements VectorSet {
         vectors = new HashSet<>();
     }
 
-    public MyVectorSet(VectorSpace vs, Vector... vectors) {
+    public MyVectorSet(VectorSpace vs, ComplexVector... vectors) {
         this.vectors = new HashSet<>(Arrays.asList(vectors));
         span = new MyVectorSpace();
-        for (SpanVector v : vs.getBase()) {
-            span.add(v.getV());
-        }
+        span.addAll(vs.getBase().toArray(new ComplexVector[0]));
     }
 
-    public MyVectorSet(Vector... vectors) {
+    public MyVectorSet(ComplexVector... vectors) {
         this.vectors = new HashSet<>(Arrays.asList(vectors));
         span = new MyVectorSpace();
     }
 
-    public boolean add(Vector v) {
+    public boolean add(ComplexVector v) {
         return vectors.add(v);
     }
 
-    public boolean spanAdd(Vector span) {
+    public boolean spanAdd(ComplexVector span) {
         return this.span.add(span);
     }
 
@@ -50,11 +48,11 @@ public class MyVectorSet implements VectorSet {
         return vectors.contains(c) || span.contains(c);
     }
 
-    public Set<Vector> getVectors() {
+    public Set<ComplexVector> getVectors() {
         return Set.copyOf(vectors);
     }
 
-    public Set<SpanVector> getSpanVectors() {
+    public Set<ComplexVector> getSpanVectors() {
         return Set.copyOf(span.getBase());
     }
 
@@ -64,8 +62,8 @@ public class MyVectorSet implements VectorSet {
         sb.append("{");
         if (span.getBase().size() > 0) {
             int i = 1;
-            for (SpanVector s : span.getBase()) {
-                sb.append("x").append(i++).append(s.getV()).append(" + ");
+            for (ComplexVector s : span.getBase()) {
+                sb.append("x").append(i++).append(s).append(" + ");
             }
             if (vectors.size() == 0) {
                 sb.reverse();
@@ -74,7 +72,7 @@ public class MyVectorSet implements VectorSet {
             }
         }
         if (vectors.size() > 0) {
-            for (Vector v : vectors) {
+            for (ComplexVector v : vectors) {
                 sb.append(v).append(" + ");
             }
             sb.reverse();

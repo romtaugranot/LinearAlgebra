@@ -1,23 +1,29 @@
 package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import com.LinearAlgebra.Matrices.VectorSets.Vector;
+import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class MyVectorSpace implements VectorSpace {
 
-    private final Set<SpanVector> base;
+    private final List<SpanVector> base;
 
     public MyVectorSpace() {
-        this.base = new HashSet<>();
+        this.base = new ArrayList<>();
     }
 
     @Override
-    public boolean add(Vector vector) {
+    public boolean add(ComplexVector vector) {
         if (contains(vector)) return false;
         return base.add(new MySpanVector(vector));
+    }
+
+    @Override
+    public boolean add(VectorSpace other, int size) {
+        ComplexVector[] base = other.getBase().toArray(new ComplexVector[0]);
+        if (other.equals(VectorSpace.zeroSpace(size)))
+            return false;
+        return addAll(base);
     }
 
     @Override
@@ -27,21 +33,15 @@ public class MyVectorSpace implements VectorSpace {
 
     @Override
     public boolean contains(Object o) {
-        if (base.contains(o)) return true;
-        if (!(o instanceof Vector || o instanceof SpanVector)) return false;
-        if (o instanceof Vector v) {
-            for (SpanVector span : base) {
-                if (span.contains(v))
-                    return true;
-            }
+        if (base.isEmpty()) return false;
+        if (!(o instanceof ComplexVector|| o instanceof SpanVector)) return false;
+        ComplexVector v;
+        if (o instanceof SpanVector sv){
+            v = sv.getV();
         } else {
-            SpanVector s = (SpanVector) o;
-            for (SpanVector span : base) {
-                if (span.equals(s))
-                    return true;
-            }
+            v = (ComplexVector) o;
         }
-        return false;
+        return !ComplexVector.isLinearIndependent(new HashSet<>(getBase()), v);
     }
 
     @Override
@@ -63,12 +63,13 @@ public class MyVectorSpace implements VectorSpace {
 
 
     @Override
-    public Set<SpanVector> getBase() {
-        return Set.copyOf(base);
+    public List<ComplexVector> getBase() {
+        return base.stream().map(SpanVector::getV).toList();
     }
 
     @Override
     public String toString() {
+        if (base.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
         sb.append("span[");
         for (SpanVector s : base) {

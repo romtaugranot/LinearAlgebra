@@ -7,9 +7,9 @@ import java.util.Collection;
 
 public interface VectorSet {
 
-    static VectorSet getZeroSet(int m) {
+    static VectorSet zeroSet(int m) {
         VectorSpace v = new MyVectorSpace();
-        v.add(Vector.getZeroVector(m));
+        v.add(ComplexVector.zeroVector(m));
         return v;
     }
 

@@ -1,22 +1,22 @@
 package com.LinearAlgebra.Matrices.VectorSets.VectorSpaces;
 
-import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
+import com.LinearAlgebra.Rings.Fields.ComplexField.ComplexScalar;
 import com.LinearAlgebra.Matrices.MatrixMathUtils;
+import com.LinearAlgebra.Matrices.VectorSets.MyComplexVector;
 import com.LinearAlgebra.Matrices.VectorSets.ComplexVector;
-import com.LinearAlgebra.Matrices.VectorSets.Vector;
 
 import java.util.Collection;
 
 public class MySpanVector implements SpanVector {
 
-    private final Vector v;
+    private final ComplexVector v;
 
-    public MySpanVector(Vector v) {
-        this.v = new ComplexVector(v.getEntries());
+    public MySpanVector(ComplexVector v) {
+        this.v = new MyComplexVector(v.entries());
     }
 
     @Override
-    public Vector get(Scalar alpha) {
+    public ComplexVector get(ComplexScalar alpha) {
         return v.mul(alpha);
     }
 
@@ -28,9 +28,9 @@ public class MySpanVector implements SpanVector {
 
     @Override
     public boolean contains(Object o) {
-        if (!(o instanceof Vector || o instanceof SpanVector)) return false;
-        if (o instanceof Vector) {
-            return MatrixMathUtils.divide(v, (Vector) o);
+        if (!(o instanceof ComplexVector || o instanceof SpanVector)) return false;
+        if (o instanceof ComplexVector) {
+            return MatrixMathUtils.divide(v, (ComplexVector) o);
         } else {
             return this.equals(o);
         }
@@ -42,8 +42,8 @@ public class MySpanVector implements SpanVector {
     }
 
     @Override
-    public Vector getV() {
-        return new ComplexVector(v.getEntries());
+    public ComplexVector getV() {
+        return new MyComplexVector(v.entries());
     }
 
     @Override

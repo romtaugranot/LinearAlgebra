@@ -1,13 +1,14 @@
 package com.LinearAlgebra;
 
-import com.LinearAlgebra.ComplexMath.Polynomials.ComplexPolynomial;
-import com.LinearAlgebra.ComplexMath.Polynomials.Polynomial;
-import com.LinearAlgebra.ComplexMath.Scalars.ComplexScalar;
-import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
-import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
-import com.LinearAlgebra.Matrices.ComplexMatrix;
+import com.LinearAlgebra.Matrices.SquareMatrices.JordanMatrices.JordanableMatrix;
+import com.LinearAlgebra.Rings.Polynomials.ComplexPolynomial;
+import com.LinearAlgebra.Rings.Polynomials.Polynomial;
+import com.LinearAlgebra.Rings.Fields.ComplexField.ComplexScalar;
+import com.LinearAlgebra.Rings.Fields.ComplexField.MyComplexScalar;
+import com.LinearAlgebra.Rings.Fields.ComplexField.RealField.MyRealScalar;
+import com.LinearAlgebra.Matrices.MyComplexMatrix;
 import com.LinearAlgebra.Matrices.ContradictionLineException;
-import com.LinearAlgebra.Matrices.Matrix;
+import com.LinearAlgebra.Matrices.ComplexMatrix;
 import com.LinearAlgebra.Matrices.SquareMatrices.NonSingularMatrix;
 import com.LinearAlgebra.Matrices.SquareMatrices.SquareMatrix;
 import com.LinearAlgebra.Matrices.VectorSets.VectorSet;
@@ -32,8 +33,8 @@ public class FxController {
     private static final String MATRIX_NOT_INVERTIBLE = "Matrix is not invertible.";
     private static final String NO_SOLUTION_TO_EQUATION = "There's no solution to the equation";
     private static final String CHARACTERISTIC_POLYNOMIAL_NOT_REAL = "Characteristic polynomial isn't real, and i'm limited to real solutions only!";
-    private static final String IRRATIONAL_EIGEN_VALUES = "Some eigen values are irrational";
-
+    private static final String IRRATIONAL_EIGEN_VALUES = "Some eigen values are irrational and i'm unable to compute them!";
+    private static final String MATRIX_NOT_JORDANABLE = "Matrix isn't jordanable or has irrational / complex roots.";
     @FXML
     private ListView<Integer> leftMatRowListView, leftMatColListView, rightMatRowListView, rightMatColListView;
     @FXML
@@ -41,7 +42,7 @@ public class FxController {
     @FXML
     private Button traceButton, transposeButton, rankButton, mulByScalarButton,
             powButton, determinantButton, inverseButton, canonicalRowEchelonButton, nullSpaceButton
-            , characteristicPolynomialButton, eigenValuesButton;
+            , characteristicPolynomialButton, eigenValuesButton, jordanButton, minimalPolynomialButton;
     @FXML
     private Button addButton, subButton, mulButton, solveEquationButton;
     @FXML
@@ -53,8 +54,8 @@ public class FxController {
     private boolean isLeft = true;
     private int leftRowSize = INITIAL_SIZE, leftColSize = INITIAL_SIZE,
             rightRowSize = INITIAL_SIZE, rightColSize = INITIAL_SIZE;
-    private Matrix leftMatrix = Matrix.getZeroMatrix(leftRowSize, leftColSize);
-    private Matrix rightMatrix = Matrix.getZeroMatrix(rightRowSize, rightColSize);
+    private ComplexMatrix leftMatrix = ComplexMatrix.zeroMatrix(leftRowSize, leftColSize);
+    private ComplexMatrix rightMatrix = ComplexMatrix.zeroMatrix(rightRowSize, rightColSize);
 
     // for some odd reason when the node's row index is zero / col index is zero, then the get function returns null.
     public static Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
@@ -106,9 +107,9 @@ public class FxController {
         }
     }
 
-    private static Scalar convertToScalar(String exp) throws IllegalArgumentException {
-        if (exp == null || (exp = exp.replaceAll("\\s", "")).isEmpty()) return Scalar.getZero();
-        if (!exp.contains("i")) return new RealScalar(exp);
+    private static ComplexScalar convertToScalar(String exp) throws IllegalArgumentException {
+        if (exp == null || (exp = exp.replaceAll("\\s", "")).isEmpty()) return ComplexScalar.ZERO;
+        if (!exp.contains("i")) return new MyRealScalar(exp);
         boolean firstPositive = true;
         boolean secondPositive = true;
         if (exp.charAt(0) == '-')     // See if first expr is negative
@@ -121,30 +122,30 @@ public class FxController {
             if (split.length > 2)
                 split[1] = split[2];
         }
-        Scalar realPart = Scalar.getZero();
-        Scalar imgPart = Scalar.getZero();
+        ComplexScalar realPart = ComplexScalar.ZERO;
+        ComplexScalar imgPart = ComplexScalar.ZERO;
         if (split[0].contains("i")) { // exp is imaginary
             String temp = split[0].replace("i", "");
             if (temp.isEmpty()) {
-                imgPart = new ComplexScalar("0", "1");
+                imgPart = new MyComplexScalar("0", "1");
             } else {
-                imgPart = new ComplexScalar("0", temp);
+                imgPart = new MyComplexScalar("0", temp);
             }
             secondPositive = firstPositive;
         } else
-            realPart = new RealScalar(split[0]);
+            realPart = new MyRealScalar(split[0]);
 
         if (!split[0].contains("i") && split.length > 1) { // if complex
             if (split[1].contains("i"))
                 split[1] = split[1].replace("i", "");
             if (split[1].isEmpty()) {
-                imgPart = new ComplexScalar("0", "1");
+                imgPart = new MyComplexScalar("0", "1");
             } else {
-                imgPart = new ComplexScalar("0", split[1]);
+                imgPart = new MyComplexScalar("0", split[1]);
             }
         }
-        if (!firstPositive) realPart = realPart.getMinus();
-        if (!secondPositive) imgPart = imgPart.getMinus();
+        if (!firstPositive) realPart = realPart.minus();
+        if (!secondPositive) imgPart = imgPart.minus();
         return realPart.add(imgPart);
     }
 
@@ -168,7 +169,7 @@ public class FxController {
         List<Button> buttons = new ArrayList<>(Arrays.asList(
                 traceButton, transposeButton, rankButton, mulByScalarButton,
                 powButton, determinantButton, inverseButton, canonicalRowEchelonButton, nullSpaceButton
-                , characteristicPolynomialButton, eigenValuesButton
+                , characteristicPolynomialButton, eigenValuesButton, jordanButton, minimalPolynomialButton
         ));
         for (Button b : buttons) {
             initSingleMatrixOpButtons(b);
@@ -201,13 +202,13 @@ public class FxController {
     }
 
     private boolean checkIfSameSize() {
-        return leftMatrix.getM() == rightMatrix.getM() && leftMatrix.getN() == rightMatrix.getN();
+        return leftMatrix.m() == rightMatrix.m() && leftMatrix.n() == rightMatrix.n();
     }
 
-    private void updateAnsMatrix(Matrix matrix) {
-        initMatrix(ansMatrixGrid, matrix.getM(), matrix.getN());
-        for (int i = 0; i < matrix.getM(); i++) {
-            for (int j = 0; j < matrix.getN(); j++) {
+    private void updateAnsMatrix(ComplexMatrix matrix) {
+        initMatrix(ansMatrixGrid, matrix.m(), matrix.n());
+        for (int i = 0; i < matrix.m(); i++) {
+            for (int j = 0; j < matrix.n(); j++) {
                 setNodeByRowColumnIndex(matrix.getMatrix()[i][j].toString().replace("(", "").replace(")", ""), i, j, ansMatrixGrid);
             }
         }
@@ -218,7 +219,7 @@ public class FxController {
         initMatrix(ansMatrixGrid, 0, 0);
     }
 
-    private Matrix getCurrMatrix() {
+    private ComplexMatrix getCurrMatrix() {
         if (isLeft)
             return leftMatrix;
         return rightMatrix;
@@ -232,11 +233,11 @@ public class FxController {
                         displayError(INCORRECT_MATRIX_SIZE);
                     else updateAnsOfBothMatrices(button);
                 } else if (op.equals(OperationOnMatrices.MUL)) {
-                    if (leftMatrix.getN() != rightMatrix.getM())
+                    if (leftMatrix.n() != rightMatrix.m())
                         displayError(INCORRECT_MATRIX_SIZE);
                     else updateAnsOfBothMatrices(button);
                 } else if (op.equals(OperationOnMatrices.SOLVE)) {
-                    if (rightMatrix.getN() != 1 || leftMatrix.getN() != rightMatrix.getM())
+                    if (rightMatrix.n() != 1 || leftMatrix.n() != rightMatrix.m())
                         displayError(INCORRECT_MATRIX_SIZE);
                     else updateAnsOfBothMatrices(button);
                 }
@@ -247,14 +248,14 @@ public class FxController {
     }
 
     private void updateAnsOfBothMatrices(Button button) {
-        Matrix matrix = null;
+        ComplexMatrix matrix = null;
         switch (button.getId()) {
             case "addButton" -> matrix = leftMatrix.add(rightMatrix);
             case "subButton" -> matrix = leftMatrix.sub(rightMatrix);
             case "mulButton" -> matrix = leftMatrix.mul(rightMatrix);
             case "solveEquationButton" -> {
                 try {
-                    VectorSet s = leftMatrix.solve(rightMatrix.getColVectors().get(0));
+                    VectorSet s = leftMatrix.solve(rightMatrix.colVectors().get(0));
                     answerLabel.setText(String.valueOf(s));
                 } catch (ContradictionLineException e) {
                     answerLabel.setText(NO_SOLUTION_TO_EQUATION);
@@ -269,7 +270,7 @@ public class FxController {
     private void initSingleMatrixOpButtons(Button button) {
         button.setOnAction(e -> {
             if (updateMatrix()) {
-                Matrix matrix = getCurrMatrix();
+                ComplexMatrix matrix = getCurrMatrix();
                 String name = button.getId();
                 switch (name) {
                     case "traceButton" -> updateTrace(matrix);
@@ -283,6 +284,8 @@ public class FxController {
                     case "nullSpaceButton" -> updateNullSpace(matrix);
                     case "characteristicPolynomialButton" -> updateCharacteristicPolynomial(matrix);
                     case "eigenValuesButton" -> updateEigenValues(matrix);
+                    case "jordanButton" -> updateJordan(matrix);
+                    case "minimalPolynomialButton" -> updateMinimalPolynomial(matrix);
                 }
             } else {
                 displayError(INCORRECT_MATRIX_INPUT);
@@ -291,53 +294,74 @@ public class FxController {
         });
     }
 
-    private void updateEigenValues(Matrix matrix) {
-        if (matrix.getM() != matrix.getN()) {
+    private void updateMinimalPolynomial(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
+            displayError(MATRIX_NOT_SQUARE);
+        } else {
+
+        }
+    }
+
+    private void updateJordan(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
+            displayError(MATRIX_NOT_SQUARE);
+        } else {
+            if (new SquareMatrix(matrix).isJordanable()) {
+                JordanableMatrix mat = new JordanableMatrix(matrix);
+                updateAnsMatrix(mat.getJordanMatrix());
+                answerLabel.setText("Basis of jordan form: " + mat.getJordanBasis());
+            } else answerLabel.setText(MATRIX_NOT_JORDANABLE);
+        }
+    }
+
+    private void updateEigenValues(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
             displayError(MATRIX_NOT_SQUARE);
         } else {
             Polynomial p = new SquareMatrix(matrix).getCharacteristicPolynomial();
             if (!p.isReal())
                 displayError(CHARACTERISTIC_POLYNOMIAL_NOT_REAL);
             else{
-                Scalar[] rationalEigenValues = new SquareMatrix(matrix).getRationalEigenValues();
+                ComplexScalar[] rationalEigenValues = new SquareMatrix(matrix).getEigenValues();
                 answerLabel.setText("Eigen Values: " + Arrays.deepToString(rationalEigenValues));
                 if (missingEigenValues(p, rationalEigenValues))
-                    answerLabel.setText(answerLabel.getText() + "\n" + IRRATIONAL_EIGEN_VALUES);
-
+                    answerLabel.setText(answerLabel.getText() + ", " + IRRATIONAL_EIGEN_VALUES);
             }
         }
     }
 
-    private boolean missingEigenValues(Polynomial p, Scalar[] rationalEigenValues) {
-        Polynomial s = Polynomial.getOne();
-        for (Scalar alpha : rationalEigenValues){
-            s = s.mul(new ComplexPolynomial((ComplexScalar) alpha.getMinus(), ComplexScalar.getOne()));
+    private boolean missingEigenValues(Polynomial p, ComplexScalar[] rationalEigenValues) {
+        for (ComplexScalar alpha : rationalEigenValues){
+            Polynomial s = new ComplexPolynomial(alpha.minus(), ComplexScalar.ONE);
+            while(!p.equals(Polynomial.ONE) && p.divides(s)) {
+                p = Polynomial.euclideanAlgorithm(p, s)[0];
+            }
         }
-        return s.equals(p);
+        return !p.equals(Polynomial.ONE);
     }
 
-    private void updateCharacteristicPolynomial(Matrix matrix) {
-        if (matrix.getM() != matrix.getN()) {
+    private void updateCharacteristicPolynomial(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
             displayError(MATRIX_NOT_SQUARE);
         } else {
             answerLabel.setText((new SquareMatrix(matrix).getCharacteristicPolynomial()).toString());
         }
     }
 
-    private void updateNullSpace(Matrix matrix) {
+    private void updateNullSpace(ComplexMatrix matrix) {
         answerLabel.setText(String.valueOf(matrix.getNullSpace()));
     }
 
-    private void updateRowEchelon(Matrix matrix) {
+    private void updateRowEchelon(ComplexMatrix matrix) {
         updateAnsMatrix(matrix.canonicalRowEchelon());
     }
 
-    private void updateInverse(Matrix matrix) {
-        if (matrix.getM() != matrix.getN()) {
+    private void updateInverse(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
             displayError(MATRIX_NOT_SQUARE);
         } else {
             try {
-                if (new SquareMatrix(matrix).getDeterminant().equals(Scalar.getZero()))
+                if (new SquareMatrix(matrix).getDeterminant().equals(ComplexScalar.ZERO))
                     displayError(MATRIX_NOT_INVERTIBLE);
                 else updateAnsMatrix(new NonSingularMatrix(matrix).getInvertible());
             } catch (Exception e) {
@@ -346,16 +370,16 @@ public class FxController {
         }
     }
 
-    private void updateDeterminant(Matrix matrix) {
-        if (matrix.getM() != matrix.getN()) {
+    private void updateDeterminant(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
             displayError(MATRIX_NOT_SQUARE);
         } else {
             answerLabel.setText("Determinant is " + (new SquareMatrix(matrix)).getDeterminant());
         }
     }
 
-    private void updatePow(Matrix matrix) {
-        if (matrix.getM() != matrix.getN()) {
+    private void updatePow(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
             displayError(MATRIX_NOT_SQUARE);
         } else {
             try {
@@ -364,9 +388,9 @@ public class FxController {
                 if (!(powString == null || powString.isEmpty()))
                     pow = Integer.parseInt(powTextField.getText());
                 if (pow == 0)
-                    updateAnsMatrix(Matrix.getOneMatrix(matrix.getM()));
+                    updateAnsMatrix(ComplexMatrix.oneMatrix(matrix.m()));
                 else {
-                    Matrix powerMatrix = matrix;
+                    ComplexMatrix powerMatrix = matrix;
                     for (int i = 0; i < pow - 1; i++) {
                         powerMatrix = powerMatrix.mul(matrix);
                     }
@@ -378,12 +402,12 @@ public class FxController {
         }
     }
 
-    private void updateMulByScalar(Matrix matrix) {
+    private void updateMulByScalar(ComplexMatrix matrix) {
         try {
             String scalarString = mulByScalarTextField.getText();
-            Scalar s;
+            ComplexScalar s;
             if (scalarString == null || scalarString.isEmpty()) {
-                s = Scalar.getZero();
+                s = ComplexScalar.ZERO;
             } else {
                 s = convertToScalar(scalarString);
             }
@@ -393,19 +417,19 @@ public class FxController {
         }
     }
 
-    private void updateTrace(Matrix matrix) {
-        if (matrix.getM() != matrix.getN()) {
+    private void updateTrace(ComplexMatrix matrix) {
+        if (matrix.m() != matrix.n()) {
             displayError(MATRIX_NOT_SQUARE);
         } else {
             answerLabel.setText("Trace is " + (new SquareMatrix(matrix)).getTrace());
         }
     }
 
-    private void updateRank(Matrix matrix) {
+    private void updateRank(ComplexMatrix matrix) {
         answerLabel.setText("Rank is " + matrix.getRank());
     }
 
-    private void updateTranspose(Matrix matrix) {
+    private void updateTranspose(ComplexMatrix matrix) {
         updateAnsMatrix(matrix.transpose());
     }
 
@@ -455,24 +479,24 @@ public class FxController {
             colSize = rightColSize;
             grid = rightMatrixGrid;
         }
-        Scalar[][] updated = new ComplexScalar[rowSize][colSize];
+        ComplexScalar[][] updated = new ComplexScalar[rowSize][colSize];
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
                 TextField t = (TextField) getNodeByRowColumnIndex(i, j, grid);
                 if (!t.getText().equals("")) {
                     try {
-                        updated[i][j] = new ComplexScalar(convertToScalar(t.getText()));
+                        updated[i][j] = new MyComplexScalar(convertToScalar(t.getText()));
                     } catch (IllegalArgumentException e) {
                         answerLabel.setText(INCORRECT_MATRIX_INPUT);
                         return false;
                     }
                 } else
-                    updated[i][j] = Scalar.getZero();
+                    updated[i][j] = ComplexScalar.ZERO;
             }
         }
         if (isLeft)
-            leftMatrix = new ComplexMatrix(updated);
-        else rightMatrix = new ComplexMatrix(updated);
+            leftMatrix = new MyComplexMatrix(updated);
+        else rightMatrix = new MyComplexMatrix(updated);
         return true;
     }
 

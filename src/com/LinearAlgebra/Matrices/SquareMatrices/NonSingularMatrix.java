@@ -1,10 +1,10 @@
 package com.LinearAlgebra.Matrices.SquareMatrices;
 
-import com.LinearAlgebra.ComplexMath.Scalars.RealScalar;
-import com.LinearAlgebra.ComplexMath.Scalars.Scalar;
-import com.LinearAlgebra.Matrices.Matrix;
-import com.LinearAlgebra.Matrices.MatrixAlgorithms.MemorizedRowEchelon;
-import com.LinearAlgebra.Matrices.MatrixAlgorithms.MyMemorizedRowEchelon;
+import com.LinearAlgebra.Rings.Fields.ComplexField.ComplexScalar;
+import com.LinearAlgebra.Rings.Fields.ComplexField.RealField.RealScalar;
+import com.LinearAlgebra.Matrices.ComplexMatrix;
+import com.LinearAlgebra.Matrices.Algorithms.MemorizedRowEchelon;
+import com.LinearAlgebra.Matrices.Algorithms.MyMemorizedRowEchelon;
 
 public class NonSingularMatrix extends SquareMatrix {
 
@@ -14,13 +14,13 @@ public class NonSingularMatrix extends SquareMatrix {
      * @param matrix
      * @pre: Matrix is non-singular.
      */
-    public NonSingularMatrix(Matrix matrix) {
+    public NonSingularMatrix(ComplexMatrix matrix) {
         super(matrix);
         rowEcheloner = new MyMemorizedRowEchelon(this);
     }
 
-    public Matrix getInvertible() {
-        Matrix inverse = Matrix.getOneMatrix(m);
+    public ComplexMatrix getInvertible() {
+        ComplexMatrix inverse = ComplexMatrix.oneMatrix(m);
         rowEcheloner.rowEchelon();
         for (int i = rowEcheloner.getOperationsOfRowEchelon().size() - 1; i >= 0; i--) {
             inverse = inverse.mul(rowEcheloner.getOperationsOfRowEchelon().get(i));
@@ -29,8 +29,8 @@ public class NonSingularMatrix extends SquareMatrix {
     }
 
     @Override
-    public Scalar getDeterminant() {
-        Scalar det = new RealScalar("1");
+    public ComplexScalar getDeterminant() {
+        ComplexScalar det = RealScalar.ONE;
         rowEcheloner.rowEchelon();
         for (ElementryMatrix elementry : rowEcheloner.getOperationsOfRowEchelon()) {
             det = det.mul(elementry.getDeterminant());
