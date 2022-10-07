@@ -1,6 +1,7 @@
 package com.LinearAlgebra.Rings.Fields.ModulesField;
 
 import com.LinearAlgebra.Rings.DivisionByZeroException;
+import com.LinearAlgebra.Rings.Fields.ComplexField.ComplexScalar;
 import com.LinearAlgebra.Rings.Fields.DifferentFieldException;
 import com.LinearAlgebra.Rings.RingScalar;
 
@@ -61,4 +62,16 @@ public class MyModulesScalar implements ModulesScalar{
     public int val() {
         return val;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj instanceof ModulesScalar s){
+            return s.val() == val % p;
+        } else if (obj instanceof ComplexScalar r){
+            return r.isReal() && (Integer.parseInt(r.getReal()) & p) == val % p;
+        } return false;
+    }
+
+
 }

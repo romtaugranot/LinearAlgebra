@@ -1,9 +1,12 @@
 package com.LinearAlgebra.Rings.Fields.ModulesField;
 
+import com.LinearAlgebra.Rings.BigRational;
 import com.LinearAlgebra.Rings.DivisionByZeroException;
 import com.LinearAlgebra.Rings.Fields.DifferentFieldException;
 import com.LinearAlgebra.Rings.Fields.FieldScalar;
 import com.LinearAlgebra.Rings.RingScalar;
+
+import java.math.BigInteger;
 
 public interface ModulesScalar extends FieldScalar {
 
@@ -34,4 +37,5 @@ public interface ModulesScalar extends FieldScalar {
 
     int p();
     int val();
+
 }
